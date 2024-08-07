@@ -1,0 +1,14 @@
+name: PonziScheme
+main: moe.feo.ponzischeme.PonziScheme
+version: 1.0
+folia-supported: true
+author: Fengshuai(R_Josef)
+website: ''
+commands:
+  ponzischeme:
+    description: 'PonziScheme的主要指令.'
+    aliases: [ps]
+    usage: |
+      /ponzischeme - 打开GUI菜单
+      /ponzischeme read - 读取手中物品
+      /ponzischeme help - 显示帮助页面

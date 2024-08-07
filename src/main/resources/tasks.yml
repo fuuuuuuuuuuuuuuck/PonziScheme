@@ -1,0 +1,24 @@
+example:
+  taskName: '示例任务'
+  type: 'bilibili_video_sanlian'
+  taskIcon:
+    ==: org.bukkit.inventory.ItemStack
+    v: 3839
+    type: ENCHANTING_TABLE
+  bvid: 'BV1gT4y1e7DY'
+  timeLimit: '5m'
+  reward:
+    commands:
+      - 'give %player% diamond 1'
+    items:
+      - ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: ENCHANTED_GOLDEN_APPLE
+      - ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: DIAMOND_SWORD
+        meta:
+          ==: ItemMeta
+          meta-type: UNSPECIFIC
+          enchants:
+            minecraft:sharpness: 5

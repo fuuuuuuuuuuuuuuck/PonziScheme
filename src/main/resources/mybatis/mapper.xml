@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="moe.feo.ponzischeme.Mapper">
+    <update id="createPlayerProfileTableMysql" parameterType="java.lang.String">
+        CREATE TABLE IF NOT EXISTS ${tablePrefix}playerprofile (
+        `name` varchar(255) NOT NULL,
+        `uuid` char(36) NOT NULL,
+        `flarumid` int(0),
+        `flarumname` varchar(255),
+        `bilibiliid` int(0),
+        `bilibiliname` varchar(255),
+        PRIMARY KEY (`uuid`))
+        CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+    </update>
+
+    <update id="createPlayerProfileTableSqlite" parameterType="java.lang.String">
+        CREATE TABLE IF NOT EXISTS ${tablePrefix}playerprofile (
+        `name` varchar(255) NOT NULL,
+        `uuid` char(36) NOT NULL,
+        `flarumid` int(0),
+        `flarumname` varchar(255) COLLATE NOCASE,
+        `bilibiliid` int(0),
+        `bilibiliname` varchar(255),
+        PRIMARY KEY (`uuid`));
+    </update>
+
+    <update id="createBilibiliVideoSanlianTaskTableMysql" parameterType="java.lang.String">
+        CREATE TABLE IF NOT EXISTS ${tablePrefix}bilibilisanlianrecord (
+        `id` int(0) NOT NULL AUTO_INCREMENT,
+        `uuid` char(36) NOT NULL,
+        `tasktype` varchar(255) NOT NULL,
+        `taskname` varchar(255) NOT NULL,
+        `taskstatus` varchar(255) NOT NULL,
+        `taskstarttime` varchar(16) NOT NULL,
+        `taskendtime` varchar(16),
+        `bvid` varchar(255),
+        PRIMARY KEY (`id`))
+        CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+    </update>
+
+    <update id="createBilibiliVideoSanlianTaskTableSqlite" parameterType="java.lang.String">
+        CREATE TABLE IF NOT EXISTS ${tablePrefix}bilibilisanlianrecord (
+        `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        `uuid` char(36) NOT NULL,
+        `tasktype` varchar(255) NOT NULL,
+        `taskname` varchar(255) NOT NULL,
+        `taskstatus` varchar(255) NOT NULL,
+        `taskstarttime` varchar(16) NOT NULL,
+        `taskendtime` varchar(16),
+        `bvid` varchar(255));
+    </update>
+
+    <update id="createFlarumPostActivateTaskTableMysql" parameterType="java.lang.String">
+        CREATE TABLE IF NOT EXISTS ${tablePrefix}bilibilisanlianrecord (
+        `id` int(0) NOT NULL AUTO_INCREMENT,
+        `uuid` char(36) NOT NULL,
+        `tasktype` varchar(255) NOT NULL,
+        `taskname` varchar(255) NOT NULL,
+        `taskstatus` varchar(255) NOT NULL,
+        `taskstarttime` varchar(16) NOT NULL,
+        `taskendtime` varchar(16),
+        PRIMARY KEY (`id`))
+        CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+    </update>
+
+    <update id="createFlarumPostActivateTaskTableMysql" parameterType="java.lang.String">
+        CREATE TABLE IF NOT EXISTS ${tablePrefix}bilibilisanlianrecord (
+        `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+        `uuid` char(36) NOT NULL,
+        `tasktype` varchar(255) NOT NULL,
+        `taskname` varchar(255) NOT NULL,
+        `taskstatus` varchar(255) NOT NULL,
+        `taskstarttime` varchar(16) NOT NULL,
+        `taskendtime` varchar(16));
+    </update>
+
+    <select id="getPlayerProfile" resultType="moe.feo.ponzischeme.player.PlayerProfile">
+        SELECT *
+        FROM ${tablePrefix}playerprofile
+        WHERE uuid = #{uuid}
+    </select>
+    
+    <insert id="addPlayerProfile" parameterType="moe.feo.ponzischeme.player.PlayerProfile">
+            INSERT INTO ${tablePrefix}playerprofile (name, uuid, flarumid, flarumname, bilibiliid, bilibiliname)
+            VALUES (#{name}, #{uuid}, #{flarumid}, #{flarumname}, #{bilibiliid}, #{bilibiliname})
+    </insert>
+
+    <update id="updatePlayerProfile" parameterType="moe.feo.ponzischeme.player.PlayerProfile">
+        UPDATE ${tablePrefix}playerprofile
+        SET name = #{name}, flarumid = #{flarumid}, flarumname = #{flarumname}, bilibiliid = #{bilibiliid}, bilibiliname = #{bilibiliname}
+        WHERE uuid = #{uuid}
+    </update>
+
+    <delete id="deletePlayerProfile" parameterType="moe.feo.ponzischeme.player.PlayerProfile">
+        DELETE FROM ${tablePrefix}playerprofile
+        WHERE uuid = #{uuid}
+    </delete>
+</mapper>
