@@ -14,6 +14,10 @@ reload: '&a配置已重载!'
 #数据库
 failedconnectsql: '连接数据库时出错！'
 
+#绑定
+notboundflarum: '&4您还未绑定Flarum账号!'
+notboundbilibili: '&4您还未绑定Bilibili账号!'
+
 #其他
 nopermission: '&4对不起，您没有权限这么做!'
 invalid: '&4命令错误!'
@@ -25,9 +29,25 @@ none: '&4 无'
 gui:
   title: '%PREFIX%'
   frame: '&8我是边框'
-  skull: '&e%PLAYER%&b的绑定数据'
-  bilibili: '&e%Bilibili%&b的绑定数据'
-  flarum: '&e%Flarum%&b的绑定数据'
+  prev: '&9上一页'
+  next: '&9下一页'
+  back: '&9返回'
+  skull: '&e%PLAYER%&b的绑定信息'
+  bilibili: '&bBilibili 绑定信息'
+  flarum: '&bFlarum 绑定信息'
+  taskstatus: '&7任务状态: &9%status%'
+  claimreward: '&7如果任务已完成，请点击领取奖励'
+  bilibilivideo: '&b视频数据'
+  bilibilivideolore: '&9%BV号:&7 %bvid%'
+  bilibililike: '&d点赞'
+  bilibililikelore: '&9点赞数:&7 %like%'
+  bilibilicoin: '&d投币'
+  bilibilicoinlore: '&9硬币数:&7 %coin%'
+  bilibilifavor: '&d收藏'
+  bilibilifavolorer: '&9收藏数:&7 %favor%'
+  flarumsite: '&bFlarum 论坛数据'
+  flarumsitelore: '&9%上次活跃时间:&7 %time%'
+  rewardcommands: '&b奖励命令'
 
 #帮助
 help:

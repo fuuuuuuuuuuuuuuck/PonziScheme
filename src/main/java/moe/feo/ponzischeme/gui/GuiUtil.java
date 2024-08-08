@@ -1,11 +1,12 @@
 package moe.feo.ponzischeme.gui;
 
+import moe.feo.ponzischeme.config.Language;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class GuiUtil {
-    public ItemStack getRandomPane() {// 获取随机一种颜色的玻璃板
+    public static ItemStack getRandomPane() {// 获取随机一种颜色的玻璃板
         short data = (short)(Math.random()* 16);// 这会随机取出0-15的数据值
         while (data == 8) {// 8号亮灰色染色玻璃板根本没有颜色
             data = (short)(Math.random()* 16);
@@ -22,8 +23,32 @@ public class GuiUtil {
             frame = new ItemStack(Material.getMaterial(glasspanes[data]), 1);
         }
         ItemMeta framemeta = frame.getItemMeta();
-        //framemeta.setDisplayName(Message.GUI_FRAME.getString());
+        framemeta.setDisplayName(Language.GUI_FRAME.getString());
         frame.setItemMeta(framemeta);
         return frame;
+    }
+
+    public static ItemStack getPrevItem() {
+        ItemStack prev = new ItemStack(Material.OAK_WALL_HANGING_SIGN, 1);
+        ItemMeta prevmeta = prev.getItemMeta();
+        prevmeta.setDisplayName(Language.GUI_PREV.getString());
+        prev.setItemMeta(prevmeta);
+        return prev;
+    }
+
+    public static ItemStack getNextItem() {
+        ItemStack next = new ItemStack(Material.OAK_WALL_HANGING_SIGN, 1);
+        ItemMeta nextmeta = next.getItemMeta();
+        nextmeta.setDisplayName(Language.GUI_NEXT.getString());
+        next.setItemMeta(nextmeta);
+        return next;
+    }
+
+    public static ItemStack getBackItem() {
+        ItemStack back = new ItemStack(Material.OAK_WALL_HANGING_SIGN, 1);
+        ItemMeta backmeta = back.getItemMeta();
+        backmeta.setDisplayName(Language.GUI_BACK.getString());
+        back.setItemMeta(backmeta);
+        return back;
     }
 }

@@ -1,8 +1,10 @@
 package moe.feo.ponzischeme.gui;
 
-import moe.feo.ponzischeme.Crawler;
-import moe.feo.ponzischeme.sql.BaseDao;
-import moe.feo.ponzischeme.sql.MysqlDao;
+import moe.feo.ponzischeme.config.Language;
+import moe.feo.ponzischeme.player.PlayerProfile;
+import moe.feo.ponzischeme.sql.DatabaseManager;
+import moe.feo.ponzischeme.task.taskprofile.BilibiliVideoSanlianTask;
+import moe.feo.ponzischeme.task.taskprofile.FlarumPostActivateTask;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -18,51 +20,55 @@ public class GUIListener implements Listener {
             return;// 如果不是玩家操作的，返回
         Player player = (Player) event.getWhoClicked();
         InventoryHolder holder = player.getOpenInventory().getTopInventory().getHolder();
+        PlayerProfile profile = DatabaseManager.dao.getPlayerProfile(player.getUniqueId().toString());
         //mainpage逻辑
-        if (holder instanceof MainPage.PonziSchemeGUIHolder) {
+        if (holder instanceof MainPage.MainPageGUIHolder) {
             event.setCancelled(true);
             // TODO 主GUI点击相关逻辑
-            //毒土豆 即bbs任务
 
-            if (event.getCurrentItem().getType()== Material.POISONOUS_POTATO){
-                String FlarmumName=new MysqlDao().getPlayerProfile(player.getUniqueId().toString()).getFlarumName();
-                if (FlarmumName==null)
-                {   player.sendMessage("你未绑定BBS账号，请使用【命令,需填充】来绑定账号");
-                    return;}
-//                //todo 填充网址
-//                Crawler.getFlarumActivateByUsername("",FlarmumName);
-//
-
-                //简单判断类型为毒土豆，不应该把这个判断当做唯一标准
-                //如果有多个任务 应该自己写出所有判断
-                //此外 主gui的描述以及物品名称未定义
-                TaskGuiPage taskGuiPage = new TaskGuiPage("bbs");
-                taskGuiPage.openGui(player);
-
+            // B站账号信息
+            if (event.getRawSlot() == 39) {
+                // TODO 绑定或重新绑定B站账号
             }
-            //书与笔 b站任务
-            if (event.getCurrentItem().getType()== Material.WRITABLE_BOOK){
-                if (new MysqlDao().getPlayerProfile(player.getUniqueId().toString()).getBilibiliId()==0)
-                {
-                    player.sendMessage("你未绑定B站账号，请使用【命令,需填充】来绑定账号");
+            // Flarum论坛账号信息
+            if (event.getRawSlot() == 41){
+                // TODO 绑定或重新绑定Flarum论坛账号
+            }
+
+            //下界之星Flarum论坛账号任务
+            if (event.getCurrentItem().getType()== Material.NETHER_STAR){
+                if (profile == null || profile.getFlarmumId() == 0) {
+                    player.sendMessage(Language.PREFIX.getString() + Language.NOTBOUNDFLARUM.getString());
                     return;
                 }
-                TaskGuiPage taskGuiPage = new TaskGuiPage("bili");
-                taskGuiPage.openGui(player);
+                TaskPage taskPage = new TaskPage(new FlarumPostActivateTask());
+                taskPage.openGui(player);
+            }
 
+            //书与笔 b站视频三连
+            if (event.getCurrentItem().getType()== Material.WRITABLE_BOOK){
+                if (profile == null || profile.getBilibiliId() == 0) {
+                    player.sendMessage(Language.PREFIX.getString() + Language.NOTBOUNDBILIBILI.getString());
+                    return;
+                }
+                TaskPage taskPage = new TaskPage(new BilibiliVideoSanlianTask());
+                taskPage.openGui(player);
             }
         }
 
-        if (holder instanceof TaskGuiPage.PonziSchemeGUIHolder){
+        if (holder instanceof TaskPage.TaskPageGUIHolder){
+            TaskPage.TaskPageGUIHolder taskPageGUIHolder = (TaskPage.TaskPageGUIHolder) holder;
             event.setCancelled(true);
-            //TODO 任务GUI点击相关逻辑
-            //纸为论坛回复，下界合金升级模板为bili点赞，海洋之心为bili投币，箱子为bili收藏
-            //论坛回复任务
-            if (event.getCurrentItem().getType()==Material.PAPER){
-                //TODO 点击领取奖励的逻辑
+            // 翻页
+            if (event.getRawSlot() == 46) { // 上一页
+                taskPageGUIHolder.getGui().prev();
+            } else if (event.getRawSlot() == 50) { // 下一页
+                taskPageGUIHolder.getGui().next();
+            } else if (event.getRawSlot() == 53) { // 返回
+                new MainPage().openGui(player);
             }
 
-            if (event.getCurrentItem().getType()==Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE||event.getCurrentItem().getType()==Material.HEART_OF_THE_SEA||event.getCurrentItem().getType()==Material.CHEST){
+            if (event.getRawSlot() == 16 || event.getRawSlot() == 25 || event.getRawSlot() == 34 || event.getRawSlot() == 43){
                 //TODO 点击领取奖励的逻辑
             }
         }

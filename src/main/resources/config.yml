@@ -4,3 +4,4 @@ database:
   user: mc
   password: mctest
 lang: zh_cn
+flarumurl: 'https://bbs.yinwurealm.org'
