@@ -3,6 +3,8 @@ package moe.feo.ponzischeme.gui;
 import moe.feo.ponzischeme.config.Language;
 import moe.feo.ponzischeme.player.PlayerProfile;
 import moe.feo.ponzischeme.sql.DatabaseManager;
+import moe.feo.ponzischeme.task.TaskManager;
+import moe.feo.ponzischeme.task.taskprofile.BaseTask;
 import moe.feo.ponzischeme.task.taskprofile.BilibiliVideoSanlianTask;
 import moe.feo.ponzischeme.task.taskprofile.FlarumPostActivateTask;
 import org.bukkit.Material;
@@ -14,15 +16,24 @@ import org.bukkit.inventory.InventoryHolder;
 
 public class GUIListener implements Listener {
 
+    private static GUIListener instance;
+
+    public static synchronized GUIListener getInstance() {
+        if (instance == null)
+            instance = new GUIListener();
+        return instance;
+    }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player))
             return;// 如果不是玩家操作的，返回
         Player player = (Player) event.getWhoClicked();
-        InventoryHolder holder = player.getOpenInventory().getTopInventory().getHolder();
+        InventoryHolder holder = event.getInventory().getHolder();
         PlayerProfile profile = DatabaseManager.dao.getPlayerProfile(player.getUniqueId().toString());
         //mainpage逻辑
         if (holder instanceof MainPage.MainPageGUIHolder) {
+            MainPage page = ((MainPage.MainPageGUIHolder) holder).getPage();
             event.setCancelled(true);
             // TODO 主GUI点击相关逻辑
 
@@ -35,30 +46,32 @@ public class GUIListener implements Listener {
                 // TODO 绑定或重新绑定Flarum论坛账号
             }
 
-            //下界之星Flarum论坛账号任务
-            if (event.getCurrentItem().getType()== Material.NETHER_STAR){
-                if (profile == null || profile.getFlarmumId() == 0) {
-                    player.sendMessage(Language.PREFIX.getString() + Language.NOTBOUNDFLARUM.getString());
-                    return;
+            //任务
+            if (((10 <= event.getRawSlot() && event.getRawSlot() <= 16) || (19 <= event.getRawSlot() && event.getRawSlot() <= 25)) && event.getCurrentItem() != null) {
+                int index = page.calculateIndexFromSlot(event.getRawSlot());
+                BaseTask task = TaskManager.getInstance().getTasks().get(index);
+                if (event.isLeftClick()) {
+                    if (task instanceof FlarumPostActivateTask) {
+                        if (profile == null || profile.getFlarmumId() == 0) {
+                            player.sendMessage(Language.PREFIX.getString() + Language.NOTBOUNDFLARUM.getString());
+                            return;
+                        }
+                    } else if (task instanceof BilibiliVideoSanlianTask) {
+                        if (profile == null || profile.getBilibiliId() == 0) {
+                            player.sendMessage(Language.PREFIX.getString() + Language.NOTBOUNDBILIBILI.getString());
+                            return;
+                        }
+                    }
+                } else if (event.isRightClick()) {
+                    TaskPage taskPage = new TaskPage(task);
+                    taskPage.openGui(player);
                 }
-                TaskPage taskPage = new TaskPage(new FlarumPostActivateTask());
-                taskPage.openGui(player);
-            }
-
-            //书与笔 b站视频三连
-            if (event.getCurrentItem().getType()== Material.WRITABLE_BOOK){
-                if (profile == null || profile.getBilibiliId() == 0) {
-                    player.sendMessage(Language.PREFIX.getString() + Language.NOTBOUNDBILIBILI.getString());
-                    return;
-                }
-                TaskPage taskPage = new TaskPage(new BilibiliVideoSanlianTask());
-                taskPage.openGui(player);
             }
         }
 
         if (holder instanceof TaskPage.TaskPageGUIHolder){
-            TaskPage.TaskPageGUIHolder taskPageGUIHolder = (TaskPage.TaskPageGUIHolder) holder;
             event.setCancelled(true);
+            TaskPage.TaskPageGUIHolder taskPageGUIHolder = (TaskPage.TaskPageGUIHolder) holder;
             // 翻页
             if (event.getRawSlot() == 46) { // 上一页
                 taskPageGUIHolder.getGui().prev();

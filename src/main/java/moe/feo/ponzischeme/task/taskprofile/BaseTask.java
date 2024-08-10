@@ -5,19 +5,20 @@ import org.bukkit.inventory.ItemStack;
 
 public class BaseTask implements TaskImpl {
 
-    private String taskType = null;
+    private String taskId = null;
     private String taskName = null;
+    private String taskType = null;
     private ItemStack icon = null;
     private Rewards rewards = null;
 
     @Override
-    public String getTaskType() {
-        return taskType;
+    public String getTaskId() {
+        return taskId;
     }
 
     @Override
-    public void setTaskType(String taskType) {
-        this.taskType = taskType;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     @Override
@@ -28,6 +29,16 @@ public class BaseTask implements TaskImpl {
     @Override
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    @Override
+    public String getTaskType() {
+        return taskType;
+    }
+
+    @Override
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
     }
 
     @Override

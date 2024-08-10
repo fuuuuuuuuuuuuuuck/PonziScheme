@@ -7,6 +7,7 @@ import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.bukkit.Bukkit;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -14,6 +15,7 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -81,6 +83,11 @@ public abstract class BaseDao implements DaoImpl {
         readlock.lock();
         try {
             PlayerProfile profile = session.selectOne("moe.feo.ponzischeme.Mapper.getPlayerProfile", param);
+            if (profile == null) {
+                profile = new PlayerProfile();
+                profile.setUuid(uuid);
+                profile.setName(Bukkit.getPlayer(UUID.fromString(uuid)).getName());
+            }
             return profile;
         } finally {
             session.commit();

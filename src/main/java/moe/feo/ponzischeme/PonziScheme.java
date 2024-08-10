@@ -1,9 +1,12 @@
 package moe.feo.ponzischeme;
 
 import moe.feo.ponzischeme.config.Config;
+import moe.feo.ponzischeme.config.ConfigUtil;
 import moe.feo.ponzischeme.config.Language;
+import moe.feo.ponzischeme.gui.GUIListener;
 import moe.feo.ponzischeme.gui.Reader;
 import moe.feo.ponzischeme.sql.DatabaseManager;
+import moe.feo.ponzischeme.task.TaskManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PonziScheme extends JavaPlugin {
@@ -22,9 +25,12 @@ public class PonziScheme extends JavaPlugin {
         DatabaseManager.initialize();
         Language.saveDefault();
         Language.load();
+        TaskManager.getInstance().saveDefault();
+        TaskManager.getInstance().load();
         getServer().getPluginManager().registerEvents(Reader.getInstance(), this);
+        getServer().getPluginManager().registerEvents(GUIListener.getInstance(), this);
         this.getCommand("ponzischeme").setExecutor(Commands.getInstance());
-        //this.getCommand("shootexp").setTabCompleter(Commands.getInstance());
+        this.getCommand("ponzischeme").setTabCompleter(Commands.getInstance());
     }
 
     @Override

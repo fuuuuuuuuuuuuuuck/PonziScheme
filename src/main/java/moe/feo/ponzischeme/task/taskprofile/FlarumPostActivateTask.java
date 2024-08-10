@@ -1,9 +1,20 @@
 package moe.feo.ponzischeme.task.taskprofile;
 
 import moe.feo.ponzischeme.task.TaskType;
+import moe.feo.ponzischeme.task.taskentity.Condition;
 import org.bukkit.inventory.ItemStack;
 
 public class FlarumPostActivateTask extends BaseTask{
+
+    private Condition condition;
+
+    public Condition getCondition() {
+        return condition;
+    }
+
+    public void setCondition(Condition condition) {
+        this.condition = condition;
+    }
 
     public FlarumPostActivateTask() {
         this.setTaskType(TaskType.FLARUM_POST_ACTIVATE);
@@ -38,4 +49,6 @@ public class FlarumPostActivateTask extends BaseTask{
     public void setIcon(ItemStack icon) {
         super.setIcon(icon);
     }
+
+
 }
