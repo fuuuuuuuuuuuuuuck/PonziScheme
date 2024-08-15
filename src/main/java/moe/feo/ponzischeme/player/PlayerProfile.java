@@ -6,10 +6,12 @@ public class PlayerProfile extends PrefixedTable {
 
     private String uuid;
     private String name;
-    private int flarmumId;
+    private int flarumId;
     private String flarumName;
+    private long flarumBinddate;
     private int bilibiliId;
     private String blibiliName;
+    private long bilibiliBinddate;
 
     public String getName() {
         return name;
@@ -27,12 +29,12 @@ public class PlayerProfile extends PrefixedTable {
         this.uuid = uuid;
     }
 
-    public int getFlarmumId() {
-        return flarmumId;
+    public int getFlarumId() {
+        return flarumId;
     }
 
-    public void setFlarmumId(int flarmumId) {
-        this.flarmumId = flarmumId;
+    public void setFlarumId(int flarumId) {
+        this.flarumId = flarumId;
     }
 
     public String getFlarumName() {
@@ -41,6 +43,14 @@ public class PlayerProfile extends PrefixedTable {
 
     public void setFlarumName(String flarumName) {
         this.flarumName = flarumName;
+    }
+
+    public long getFlarumBinddate() {
+        return flarumBinddate;
+    }
+
+    public void setFlarumBinddate(long flarumBinddate) {
+        this.flarumBinddate = flarumBinddate;
     }
 
     public int getBilibiliId() {
@@ -57,5 +67,13 @@ public class PlayerProfile extends PrefixedTable {
 
     public void setBlibiliName(String blibiliName) {
         this.blibiliName = blibiliName;
+    }
+
+    public long getBilibiliBinddate() {
+        return bilibiliBinddate;
+    }
+
+    public void setBilibiliBinddate(long bilibiliBinddate) {
+        this.bilibiliBinddate = bilibiliBinddate;
     }
 }

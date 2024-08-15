@@ -11,7 +11,10 @@ public enum Config {
     DATABASE_USER("database.user"),
     DATABASE_PASSWORD("database.password"),
     LANG("lang"),
-    FLARUMURL("flarumurl")
+    FLARUMURL("flarumurl"),
+    CANCELKEYWORDS("cancelkeywords"),
+    BINDCOOLDOWN_FLARUM("bindcooldown.flarum"),
+    BINDCOOLDOWN_BILIBILI("bindcooldown.bilibili"),
     ;
 
     /**

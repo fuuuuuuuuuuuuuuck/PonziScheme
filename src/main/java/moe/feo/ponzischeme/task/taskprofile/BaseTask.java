@@ -1,7 +1,11 @@
 package moe.feo.ponzischeme.task.taskprofile;
 
 import moe.feo.ponzischeme.task.Rewards;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class BaseTask implements TaskImpl {
 
@@ -59,5 +63,15 @@ public class BaseTask implements TaskImpl {
     @Override
     public void setRewards(Rewards rewards) {
         this.rewards = rewards;
+    }
+
+    @Override
+    public void giveReward(Player player) {
+        List<ItemStack> items = getRewards().getItems();
+        player.getInventory().addItem(items.toArray(new ItemStack[0]));
+        List<String> commands = getRewards().getCommands();
+        for (String command : commands) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%PLAYER%", player.getName()));
+        }
     }
 }

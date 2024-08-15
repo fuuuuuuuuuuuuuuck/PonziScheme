@@ -1,4 +1,4 @@
-package moe.feo.ponzischeme.task.taskentity;
+package moe.feo.ponzischeme.task.taskprofile;
 
 public class Condition {
 

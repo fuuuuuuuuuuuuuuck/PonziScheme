@@ -5,3 +5,10 @@ database:
   password: mctest
 lang: zh_cn
 flarumurl: 'https://bbs.yinwurealm.org'
+cancelkeywords:
+  - 'cancel'
+  - '取消'
+  - '取消绑定'
+bindcooldown:
+  flarum: 30
+  bilibili: 30

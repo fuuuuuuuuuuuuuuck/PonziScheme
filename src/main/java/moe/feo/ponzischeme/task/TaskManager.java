@@ -1,7 +1,7 @@
 package moe.feo.ponzischeme.task;
 
 import moe.feo.ponzischeme.config.ConfigUtil;
-import moe.feo.ponzischeme.task.taskentity.Condition;
+import moe.feo.ponzischeme.task.taskprofile.Condition;
 import moe.feo.ponzischeme.task.taskprofile.BaseTask;
 import moe.feo.ponzischeme.task.taskprofile.BilibiliVideoSanlianTask;
 import moe.feo.ponzischeme.task.taskprofile.FlarumPostActivateTask;
@@ -9,12 +9,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class TaskManager {
 
-    private List<BaseTask> tasks;
+    private Map<String, BaseTask> tasks;
     private static TaskManager instance;
 
     public static synchronized TaskManager getInstance() {
@@ -24,7 +23,7 @@ public class TaskManager {
         return instance;
     }
 
-    public List<BaseTask> getTasks() {
+    public Map<String, BaseTask> getTasks() {
         return tasks;
     }
 
@@ -33,7 +32,7 @@ public class TaskManager {
     }
 
     public void load() {
-        tasks = new ArrayList<>();
+        tasks = new HashMap<>();
         YamlConfiguration taskFile = (YamlConfiguration) ConfigUtil.load("tasks.yml");
         for (String key : taskFile.getKeys(false)) {
             BaseTask task = null;
@@ -65,7 +64,7 @@ public class TaskManager {
                 task.setTaskType(taskType);
                 task.setIcon(icon);
                 task.setRewards(rewards);
-                tasks.add(task);
+                tasks.put(task.getTaskId(), task);
             }
         }
     }

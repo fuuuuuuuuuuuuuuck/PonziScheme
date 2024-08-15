@@ -1,5 +1,6 @@
 package moe.feo.ponzischeme.sql;
 
+import moe.feo.ponzischeme.Commands;
 import moe.feo.ponzischeme.config.Config;
 import moe.feo.ponzischeme.config.ConfigUtil;
 
@@ -19,8 +20,6 @@ public class DatabaseManager {
                 dao = SqliteDao.getInstance();
             }
             dao.load();
-            //CLI.setSQLer(dao);
-            //GUI.setSQLer(dao);
             //Crawler.setSQLer(dao);
             //Poster.setSQLer(dao);
             //Reminder.setSQLer(dao);

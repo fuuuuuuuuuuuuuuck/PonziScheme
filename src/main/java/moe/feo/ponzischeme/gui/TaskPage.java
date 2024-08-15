@@ -1,7 +1,6 @@
 package moe.feo.ponzischeme.gui;
 
 import moe.feo.ponzischeme.Crawler;
-import moe.feo.ponzischeme.PonziScheme;
 import moe.feo.ponzischeme.Util;
 import moe.feo.ponzischeme.bilibili.BilibiliVideoStatus;
 import moe.feo.ponzischeme.config.Config;
@@ -19,7 +18,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -50,6 +48,10 @@ public class TaskPage {
         public TaskPage getGui() {
             return page;
         }
+    }
+
+    public TaskImpl getTask() {
+        return task;
     }
 
     public Inventory getGui() {
@@ -153,7 +155,7 @@ public class TaskPage {
             else if (task.getTaskType().equals(TaskType.FLARUM_POST_ACTIVATE)) {
                 // 论坛数据
                 FlarumPostActivateTask flarumPostActivateTask = (FlarumPostActivateTask) task;
-                int flarumUserId = DatabaseManager.dao.getPlayerProfile(player.getUniqueId().toString()).getFlarmumId();
+                int flarumUserId = DatabaseManager.dao.getPlayerProfile(player.getUniqueId().toString()).getFlarumId();
                 ArrayList<FlarumPost> flarumPosts = null;
                 if (flarumUserId != 0) {
                     String flarumUserName = Crawler.getFlarumUserByUserId(Config.FLARUMURL.getString(), flarumUserId).getAttributes().getSlug();

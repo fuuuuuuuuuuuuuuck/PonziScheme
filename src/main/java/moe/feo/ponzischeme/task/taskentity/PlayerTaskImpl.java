@@ -6,12 +6,14 @@ public interface PlayerTaskImpl {
     void setUuid(String uuid);
     String getTaskType();
     void setTaskType(String taskType);
+    String getTaskId();
+    void setTaskId(String taskId);
     String getTaskName();
     void setTaskName(String taskName);
     String getTaskStatus();
     void setTaskStatus(String taskStatus);
-    String getTaskStartTime();
-    void setTaskStartTime(String taskStartTime);
-    String getTaskEndTime();
-    void setTaskEndTime(String taskEndTime);
+    long getTaskStartTime();
+    void setTaskStartTime(long taskStartTime);
+    long getTaskEndTime();
+    void setTaskEndTime(long taskEndTime);
 }

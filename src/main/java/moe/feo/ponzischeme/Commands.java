@@ -1,17 +1,23 @@
 package moe.feo.ponzischeme;
 
+import moe.feo.ponzischeme.bilibili.BilibiliMember;
+import moe.feo.ponzischeme.config.Config;
 import moe.feo.ponzischeme.config.Language;
+import moe.feo.ponzischeme.flarum.FlarumUser;
+import moe.feo.ponzischeme.gui.GUIListener;
 import moe.feo.ponzischeme.gui.MainPage;
 import moe.feo.ponzischeme.gui.Reader;
+import moe.feo.ponzischeme.player.BindListener;
+import moe.feo.ponzischeme.player.PlayerProfile;
+import moe.feo.ponzischeme.sql.BaseDao;
+import moe.feo.ponzischeme.sql.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * 命令执行器
@@ -19,6 +25,7 @@ import java.util.UUID;
 public class Commands implements TabExecutor {
 
     private static final Commands executor = new Commands();
+    private Map<UUID, String> cache = new HashMap<>();
 
     private Commands() {
     }
@@ -111,19 +118,97 @@ public class Commands implements TabExecutor {
                     break;
                 }
                 String type = args[1];
-                String player = args[2];
-                UUID uuid = Bukkit.getOfflinePlayer(player).getUniqueId();
-                switch (type) {
-                    case "flarum": {
-                        //TODO 绑定flarum账号, 需让用户确认两遍
-                        break;
+                String id = args[2];
+                UUID uuid = ((Player) sender).getUniqueId();
+                PlayerProfile profile = DatabaseManager.dao.getPlayerProfile(uuid.toString());
+                long binddate = 0;
+                int cooldownDays = 0;
+                boolean isrecording = true;
+                if (profile != null) {
+                    switch (type) {
+                        case BaseDao.TYPE_FLARUM: {
+                            binddate = profile.getFlarumBinddate();
+                            cooldownDays = Config.BINDCOOLDOWN_FLARUM.getInt();
+                            break;
+                        }
+                        case BaseDao.TYPE_BILIBILI: {
+                            binddate = profile.getBilibiliBinddate();
+                            cooldownDays = Config.BINDCOOLDOWN_BILIBILI.getInt();
+                            break;
+                        }
                     }
-                    case "bilibili": {
-                        //TODO 绑定bilibili账号, 需让用户确认两遍
-                        break;
+                    long cd = System.currentTimeMillis() - binddate;// 已经过了的cd
+                    long settedcd = cooldownDays * (long) 86400000;// 设置的cd
+                    if (cd < settedcd) {// 如果还在cd那么直接return;
+                        long leftcd = settedcd - cd;// 剩下的cd
+                        long leftcdtodays = leftcd / 86400000;
+                        sender.sendMessage(Language.PREFIX.getString() + Language.BINDINCOOLDOWN.getString()
+                                .replaceAll("%COOLDOWN%", String.valueOf(leftcdtodays)));
+                        BindListener.unregister(sender);
+                        return true;
                     }
+                } else {
+                    profile = new PlayerProfile();
+                    isrecording = false;
                 }
-                break;
+                PlayerProfile check = DatabaseManager.dao.checkPlayerProfile(type, Integer.parseInt(args[2]));
+                if (check == null) {// 没有人绑定过这个id
+                    if (cache.get(uuid) != null && cache.get(uuid).equals(type + ": " + args[2])) {
+                        profile.setUuid(uuid.toString());
+                        profile.setName(sender.getName());
+                        boolean succeed = false;
+                        switch (type) {
+                            case BaseDao.TYPE_FLARUM: {
+                                profile.setFlarumId(Integer.parseInt(args[2]));
+                                FlarumUser flarumUser = Crawler.getFlarumUserByUserId(Config.FLARUMURL.getString(), Integer.parseInt(args[2]));
+                                if (flarumUser != null) {
+                                    profile.setFlarumName(flarumUser.getAttributes().getUsername());
+                                    profile.setFlarumBinddate(System.currentTimeMillis());
+                                    succeed = true;
+                                }
+                                break;
+                            }
+                            case BaseDao.TYPE_BILIBILI: {
+                                profile.setBilibiliId(Integer.parseInt(args[2]));
+                                BilibiliMember bilibiliMember = Crawler.getBilibiliMember(Integer.parseInt(args[2]));
+                                if (bilibiliMember != null) {
+                                    profile.setBlibiliName(bilibiliMember.getName());
+                                    profile.setBilibiliBinddate(System.currentTimeMillis());
+                                    succeed = true;
+                                }
+                                break;
+                           }
+                        }
+                        if (isrecording) {
+                            DatabaseManager.dao.updatePlayerProfile(profile);
+                        } else {
+                            DatabaseManager.dao.addPlayerProfile(profile);
+                        }
+                        cache.put(uuid, null);// 绑定结束, 清理这个键
+                        BindListener.unregister(sender);
+                        if (succeed) {
+                            sender.sendMessage(Language.PREFIX.getString() + Language.BINDSUCCESS.getString());
+                        } else {
+                            sender.sendMessage(Language.PREFIX.getString() + Language.ACCOUNTNOTFOUND.getString());
+                        }
+                    } else if (cache.get(uuid) == null) {
+                        cache.put(uuid, type + ": " + args[2]);
+                        sender.sendMessage(Language.PREFIX.getString() + Language.REPEAT.getString());
+                    } else {
+                        sender.sendMessage(Language.PREFIX.getString() + Language.NOTSAME.getString());
+                        cache.put(uuid, null);
+                        BindListener.unregister(sender);
+                    }
+                    return true;
+                } else if (check.getUuid().equals(uuid.toString())) {// 自己绑定了这个论坛id
+                    sender.sendMessage(Language.PREFIX.getString() + Language.OWNSAMEBIND.getString());
+                    BindListener.unregister(sender);
+                    return true;
+                } else {
+                    sender.sendMessage(Language.PREFIX.getString() + Language.SAMEBIND.getString());
+                    BindListener.unregister(sender);
+                    return true;
+                }
             }
             case "reader": {
                 if (!sender.hasPermission("ponzischeme.reader")) {
@@ -150,5 +235,13 @@ public class Commands implements TabExecutor {
             }
         }
         return true;
+    }
+
+    public Map<UUID, String> getCache() {
+        return cache;
+    }
+
+    public void setCache(Map<UUID, String> cache) {
+        this.cache = cache;
     }
 }

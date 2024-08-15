@@ -3,6 +3,8 @@ package moe.feo.ponzischeme.sql;
 import moe.feo.ponzischeme.PonziScheme;
 import moe.feo.ponzischeme.config.Config;
 import moe.feo.ponzischeme.player.PlayerProfile;
+import moe.feo.ponzischeme.task.taskentity.BilibiliVideoSanlianPlayerTask;
+import moe.feo.ponzischeme.task.taskentity.FlarumPostActivatePlayerTask;
 import org.apache.ibatis.datasource.pooled.PooledDataSource;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -15,12 +17,13 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-public abstract class BaseDao implements DaoImpl {
+public abstract class BaseDao {
 
     private SqlSessionFactory ssf = null;
     public static final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -130,6 +133,133 @@ public abstract class BaseDao implements DaoImpl {
         writelock.lock();
         try {
             session.delete("moe.feo.ponzischeme.Mapper.deletePlayerProfile", param);
+        } finally {
+            session.commit();
+            writelock.unlock();
+            session.close();
+        }
+    }
+
+    public static final String TYPE_BILIBILI = "bilibili";
+    public static final String TYPE_FLARUM = "flarum";
+
+    public PlayerProfile checkPlayerProfile(String type, int id) {
+        SqlSession session = this.getSessionFactory().openSession();
+        PlayerProfile param = new PlayerProfile();
+        param.setTablePrefix(Config.DATABASE_PREFIX.getString());
+        switch (type) {
+            case TYPE_BILIBILI:
+                param.setBilibiliId(id);
+                break;
+            case TYPE_FLARUM:
+                param.setFlarumId(id);
+                break;
+            default:
+                return null;
+        }
+        readlock.lock();
+        PlayerProfile profile;
+        try {
+            profile = session.selectOne("moe.feo.ponzischeme.Mapper.checkPlayerProfile", param);
+        } finally {
+            session.commit();
+            readlock.unlock();
+            session.close();
+        }
+        return profile;
+    }
+
+    public FlarumPostActivatePlayerTask getFlarumPostActivateTask(FlarumPostActivatePlayerTask param) {
+        SqlSession session = this.getSessionFactory().openSession();
+        param.setTablePrefix(Config.DATABASE_PREFIX.getString());
+        readlock.lock();
+        FlarumPostActivatePlayerTask task;
+        try {
+            task = session.selectOne("moe.feo.ponzischeme.Mapper.getFlarumPostActivateTask", param);
+        } finally {
+            session.commit();
+            readlock.unlock();
+            session.close();
+        }
+        return task;
+    }
+
+    public void addFlarumPostActivateTask(FlarumPostActivatePlayerTask param) {
+        SqlSession session = this.getSessionFactory().openSession();
+        param.setTablePrefix(Config.DATABASE_PREFIX.getString());
+        writelock.lock();
+        try {
+            session.insert("moe.feo.ponzischeme.Mapper.addFlarumPostActivateTask", param);
+        } finally {
+            session.commit();
+            writelock.unlock();
+            session.close();
+        }
+    }
+
+    public void updateFlarumPostActivateTask(FlarumPostActivatePlayerTask param) {
+        SqlSession session = this.getSessionFactory().openSession();
+        param.setTablePrefix(Config.DATABASE_PREFIX.getString());
+        writelock.lock();
+        try {
+            session.update("moe.feo.ponzischeme.Mapper.updateFlarumPostActivateTask", param);
+        } finally {
+            session.commit();
+            writelock.unlock();
+            session.close();
+        }
+    }
+
+    public List<BilibiliVideoSanlianPlayerTask> loadBilibiliVideoSanlianTasks() {
+        SqlSession session = this.getSessionFactory().openSession();
+        BilibiliVideoSanlianPlayerTask param = new BilibiliVideoSanlianPlayerTask();
+        param.setTablePrefix(Config.DATABASE_PREFIX.getString());
+        readlock.lock();
+        List<BilibiliVideoSanlianPlayerTask> tasks;
+        try {
+            tasks = session.selectList("moe.feo.ponzischeme.Mapper.getBilibiliVideoSanlianTask", param);
+        } finally {
+            session.commit();
+            readlock.unlock();
+            session.close();
+        }
+        return tasks;
+    }
+
+    public BilibiliVideoSanlianPlayerTask getBilibiliVideoSanlianTask(BilibiliVideoSanlianPlayerTask param) {
+        SqlSession session = this.getSessionFactory().openSession();
+        param.setTablePrefix(Config.DATABASE_PREFIX.getString());
+        readlock.lock();
+        BilibiliVideoSanlianPlayerTask task;
+        try {
+            task = session.selectOne("moe.feo.ponzischeme.Mapper.getBilibiliVideoSanlianTask", param);
+        } finally {
+            session.commit();
+            readlock.unlock();
+            session.close();
+        }
+        return task;
+    }
+
+    public void addBilibiliVideoSanlianTask(BilibiliVideoSanlianPlayerTask param) {
+        SqlSession session = this.getSessionFactory().openSession();
+        param.setTablePrefix(Config.DATABASE_PREFIX.getString());
+        writelock.lock();
+        try {
+            session.insert("moe.feo.ponzischeme.Mapper.addBilibiliVideoSanlianTask", param);
+        } finally {
+            session.commit();
+            writelock.unlock();
+            session.close();
+        }
+    }
+
+    public void updateBilibiliVideoSanlianTask(BilibiliVideoSanlianPlayerTask param) {
+        SqlSession session = this.getSessionFactory().openSession();
+        param.setTablePrefix(Config.DATABASE_PREFIX.getString());
+        writelock.lock();
+        try {
+            session.update("moe.feo.ponzischeme.Mapper.updateBilibiliVideoSanlianTask", param);
         } finally {
             session.commit();
             writelock.unlock();

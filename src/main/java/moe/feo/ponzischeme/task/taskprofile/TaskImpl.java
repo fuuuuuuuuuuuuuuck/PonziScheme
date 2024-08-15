@@ -1,6 +1,7 @@
 package moe.feo.ponzischeme.task.taskprofile;
 
 import moe.feo.ponzischeme.task.Rewards;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public interface TaskImpl {
@@ -14,4 +15,5 @@ public interface TaskImpl {
     void setIcon(ItemStack icon);
     Rewards getRewards();
     void setRewards(Rewards rewards);
+    void giveReward(Player player);
 }

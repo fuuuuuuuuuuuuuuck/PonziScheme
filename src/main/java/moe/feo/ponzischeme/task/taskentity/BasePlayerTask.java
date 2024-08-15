@@ -1,13 +1,16 @@
 package moe.feo.ponzischeme.task.taskentity;
 
-public class BasePlayerTask implements PlayerTaskImpl{
+import moe.feo.ponzischeme.sql.PrefixedTable;
+
+public class BasePlayerTask extends PrefixedTable implements PlayerTaskImpl{
 
     private String uuid;
     private String taskType;
+    private String taskId;
     private String taskName;
     private String taskStatus;
-    private String taskStartTime;
-    private String taskEndTime;
+    private long taskStartTime;
+    private long taskEndTime;
 
     @Override
     public String getUuid() {
@@ -27,6 +30,16 @@ public class BasePlayerTask implements PlayerTaskImpl{
     @Override
     public void setTaskType(String taskType) {
         this.taskType = taskType;
+    }
+
+    @Override
+    public String getTaskId() {
+        return taskId;
+    }
+
+    @Override
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     @Override
@@ -50,22 +63,22 @@ public class BasePlayerTask implements PlayerTaskImpl{
     }
 
     @Override
-    public String getTaskStartTime() {
+    public long getTaskStartTime() {
         return taskStartTime;
     }
 
     @Override
-    public void setTaskStartTime(String taskStartTime) {
+    public void setTaskStartTime(long taskStartTime) {
         this.taskStartTime = taskStartTime;
     }
 
     @Override
-    public String getTaskEndTime() {
+    public long getTaskEndTime() {
         return taskEndTime;
     }
 
     @Override
-    public void setTaskEndTime(String taskEndTime) {
+    public void setTaskEndTime(long taskEndTime) {
         this.taskEndTime = taskEndTime;
     }
 }

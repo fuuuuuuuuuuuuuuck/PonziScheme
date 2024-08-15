@@ -1,7 +1,6 @@
 package moe.feo.ponzischeme.task.taskprofile;
 
 import moe.feo.ponzischeme.task.TaskType;
-import moe.feo.ponzischeme.task.taskentity.Condition;
 import org.bukkit.inventory.ItemStack;
 
 public class FlarumPostActivateTask extends BaseTask{

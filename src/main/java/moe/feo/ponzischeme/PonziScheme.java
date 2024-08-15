@@ -7,6 +7,7 @@ import moe.feo.ponzischeme.gui.GUIListener;
 import moe.feo.ponzischeme.gui.Reader;
 import moe.feo.ponzischeme.sql.DatabaseManager;
 import moe.feo.ponzischeme.task.TaskManager;
+import moe.feo.ponzischeme.task.taskentity.BilibiliSanlianTimer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class PonziScheme extends JavaPlugin {
@@ -27,6 +28,7 @@ public class PonziScheme extends JavaPlugin {
         Language.load();
         TaskManager.getInstance().saveDefault();
         TaskManager.getInstance().load();
+        BilibiliSanlianTimer.load();
         getServer().getPluginManager().registerEvents(Reader.getInstance(), this);
         getServer().getPluginManager().registerEvents(GUIListener.getInstance(), this);
         this.getCommand("ponzischeme").setExecutor(Commands.getInstance());
