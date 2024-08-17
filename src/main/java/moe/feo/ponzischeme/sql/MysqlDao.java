@@ -15,6 +15,8 @@ public class MysqlDao extends BaseDao{
     protected void load() {
         super.createSessionFactory();
         createPlayerProfileTable();
+        createFlarumPostActivateTaskDataTable();
+        createBilibiliVideoSanlianTaskDataTable();
     }
 
     @Override

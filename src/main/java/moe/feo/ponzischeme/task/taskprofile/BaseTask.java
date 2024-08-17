@@ -1,23 +1,28 @@
 package moe.feo.ponzischeme.task.taskprofile;
 
 import moe.feo.ponzischeme.task.Rewards;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class BaseTask implements TaskImpl {
 
-    private String taskType = null;
+    private String taskId = null;
     private String taskName = null;
+    private String taskType = null;
     private ItemStack icon = null;
     private Rewards rewards = null;
 
     @Override
-    public String getTaskType() {
-        return taskType;
+    public String getTaskId() {
+        return taskId;
     }
 
     @Override
-    public void setTaskType(String taskType) {
-        this.taskType = taskType;
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
     }
 
     @Override
@@ -28,6 +33,16 @@ public class BaseTask implements TaskImpl {
     @Override
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+    @Override
+    public String getTaskType() {
+        return taskType;
+    }
+
+    @Override
+    public void setTaskType(String taskType) {
+        this.taskType = taskType;
     }
 
     @Override
@@ -48,5 +63,15 @@ public class BaseTask implements TaskImpl {
     @Override
     public void setRewards(Rewards rewards) {
         this.rewards = rewards;
+    }
+
+    @Override
+    public void giveReward(Player player) {
+        List<ItemStack> items = getRewards().getItems();
+        player.getInventory().addItem(items.toArray(new ItemStack[0]));
+        List<String> commands = getRewards().getCommands();
+        for (String command : commands) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%PLAYER%", player.getName()));
+        }
     }
 }

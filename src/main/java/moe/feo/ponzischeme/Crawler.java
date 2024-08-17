@@ -38,7 +38,7 @@ public class Crawler {
     }
 
     public static FlarumUser getFlarumUserByUsername(String website, String username) {
-        String api = flarumUserUrl.replace("%flarum%", website);
+        String api = flarumUserUrl.replaceAll("%flarum%", website);
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("bySlug", true);
         String content = HttpUtil.get(api + username, paramMap);
@@ -48,7 +48,7 @@ public class Crawler {
     }
 
     public static FlarumUser getFlarumUserByUserId(String website, int userId) {
-        String api = flarumUserUrl.replace("%flarum%", website);
+        String api = flarumUserUrl.replaceAll("%flarum%", website);
         String content = HttpUtil.get(api + Integer.toString(userId));
         JSONObject jsonObject = JSONUtil.parseObj(content);
         FlarumUser user = jsonObject.getByPath("data", FlarumUser.class);
@@ -56,7 +56,7 @@ public class Crawler {
     }
 
     public static ArrayList<FlarumPost> getFlarumActivateByUsername(String website, String username) {
-        String api = flarumActivateUrl.replace("%flarum%", website);
+        String api = flarumActivateUrl.replaceAll("%flarum%", website);
         HashMap<String, Object> paramMap = new HashMap<>();
         paramMap.put("filter[author]", username);
         paramMap.put("sort", "-createdAt");

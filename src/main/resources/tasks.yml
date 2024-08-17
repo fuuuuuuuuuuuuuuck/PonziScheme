@@ -1,20 +1,41 @@
-example:
-  taskName: '示例任务'
-  type: 'bilibili_video_sanlian'
-  taskIcon:
+example-flarum:
+  name: '示例论坛每日活跃任务'
+  type: 'flarum_post_activate'
+  icon:
     ==: org.bukkit.inventory.ItemStack
     v: 3839
-    type: ENCHANTING_TABLE
-  bvid: 'BV1gT4y1e7DY'
+    type: NETHER_STAR
+  condition:
+    repeat: 'days'
+    count: '1'
+  reward:
+    commands:
+      - 'exp give %player% 1000'
+    items:
+      '1':
+        ==: org.bukkit.inventory.ItemStack
+        v: 3839
+        type: ENCHANTED_GOLDEN_APPLE
+
+example-bilibili:
+  name: '示例B站三连任务'
+  type: 'bilibili_video_sanlian'
+  icon:
+    ==: org.bukkit.inventory.ItemStack
+    v: 3839
+    type: WRITABLE_BOOK
+  bvid: 'BV1puvUeREap'
   timeLimit: '5m'
   reward:
     commands:
       - 'give %player% diamond 1'
     items:
-      - ==: org.bukkit.inventory.ItemStack
+      '1':
+        ==: org.bukkit.inventory.ItemStack
         v: 3839
         type: ENCHANTED_GOLDEN_APPLE
-      - ==: org.bukkit.inventory.ItemStack
+      '2':
+        ==: org.bukkit.inventory.ItemStack
         v: 3839
         type: DIAMOND_SWORD
         meta:

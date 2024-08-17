@@ -10,8 +10,12 @@ public enum Config {
     DATABASE_URL("database.url"),
     DATABASE_USER("database.user"),
     DATABASE_PASSWORD("database.password"),
-
-    LANG("lang");
+    LANG("lang"),
+    FLARUMURL("flarumurl"),
+    CANCELKEYWORDS("cancelkeywords"),
+    BINDCOOLDOWN_FLARUM("bindcooldown.flarum"),
+    BINDCOOLDOWN_BILIBILI("bindcooldown.bilibili"),
+    ;
 
     /**
      * 加载配置文件

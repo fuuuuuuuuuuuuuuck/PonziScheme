@@ -1,6 +1,6 @@
 package moe.feo.ponzischeme.gui;
 
-import moe.feo.ponzischeme.PonziScheme;
+import moe.feo.ponzischeme.Util;
 import moe.feo.ponzischeme.config.ConfigUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -11,7 +11,6 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -80,7 +79,7 @@ public class Reader implements Listener {
      * @param player 要打开 Inventory 的玩家
      */
     public void openForPlayer(Player player) {
-        new BukkitRunnable() {
+        Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 lock.lock();
@@ -91,9 +90,16 @@ public class Reader implements Listener {
                 } finally {
                     lock.unlock();
                 }
-                player.openInventory(inventory);
+                Runnable runnableOpen = new Runnable() {
+                    @Override
+                    public void run() {
+                        player.openInventory(inventory);
+                    }
+                };
+                Util.runTask(runnableOpen, player);
             }
-        }.runTaskAsynchronously(PonziScheme.getInstance());
+        };
+        Util.runTaskAsynchronously(runnable, player);
     }
 
     /**
@@ -104,7 +110,7 @@ public class Reader implements Listener {
     public void onPlayerClose(InventoryCloseEvent event) {
         InventoryHolder holder = event.getPlayer().getOpenInventory().getTopInventory().getHolder();
         if (holder instanceof ReaderInventoryHolder) {
-            new BukkitRunnable() {
+            Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     lock.lock();
@@ -117,7 +123,8 @@ public class Reader implements Listener {
                         lock.unlock();
                     }
                 }
-            }.runTaskAsynchronously(PonziScheme.getInstance());
+            };
+            Util.runTaskAsynchronously(runnable, (Player) event.getPlayer());
         }
     }
 }

@@ -14,20 +14,61 @@ reload: '&a配置已重载!'
 #数据库
 failedconnectsql: '连接数据库时出错！'
 
+#任务
+rewardgived: '&a %TASK% 已完成, 奖励发放完毕!'
+rewardbroadcast: '&b玩家 &e%PLAYER% &b刚刚领取了 %TASK% 奖励, 大家也快来完成任务吧! '
+taskcooldown: '&4抱歉您的任务正在冷却中: &f%COOLDOWN% .'
+taskreceived: '&a任务已接取!'
+taskcanceled: '&4任务已过期, 请重新领取任务!'
+taskongoing: '&4任务未完成!'
+
+#绑定
+notboundflarum: '&4您还未绑定Flarum账号!'
+notboundbilibili: '&4您还未绑定Bilibili账号!'
+bindincooldown: '&4抱歉您的账号正在绑定冷却中: &f%COOLDOWN% 天.'
+bindsuccess: '&a绑定成功!'
+bindcanceled: '&c绑定已取消.'
+repeat: '&c为防止输错ID, 请重复输入一次!'
+notsame: '&4抱歉, 两次输入不一致，请重新输入!'
+samebind: '&4已有相同的绑定,如果这是您的ID,请联系管理!'
+ownsamebind: '&4您已经绑定过相同ID!'
+accountnotfound: '&4没有找到该账号, 请检查输入是否正确!'
+
 #其他
 nopermission: '&4对不起，您没有权限这么做!'
 invalid: '&4命令错误!'
 invalidnum: '&4无效的数字!'
 playercmd: '&4该命令必须由玩家执行!'
 none: '&4 无'
+faileduninstallmo: '未能按照预期卸载监听!'
 
 #箱子GUI界面
 gui:
   title: '%PREFIX%'
   frame: '&8我是边框'
-  skull: '&e%PLAYER%&b的绑定数据'
-  bilibili: '&e%Bilibili%&b的绑定数据'
-  flarum: '&e%Flarum%&b的绑定数据'
+  prev: '&9上一页'
+  next: '&9下一页'
+  back: '&9返回'
+  skull: '&e%PLAYER%&b 的绑定信息'
+  bilibili: '&bBilibili 绑定信息'
+  titletask: '%PREFIX% &b任务奖励'
+  flarum: '&bFlarum 绑定信息'
+  taskstatus: '&7任务状态: &9%STATUS%'
+  claimreward: '&7如果任务已完成，请点击领取奖励'
+  bilibilierror: '&4B站视频数据获取失败!'
+  bilibilivideo: '&b视频数据'
+  bilibilivideolore: '&9%BV号:&7 %BVID%'
+  bilibililike: '&d点赞'
+  bilibililikelore: '&9点赞数:&7 %LIKE%'
+  bilibilicoin: '&d投币'
+  bilibilicoinlore: '&9硬币数:&7 %COIN%'
+  bilibilifavor: '&d收藏'
+  bilibilifavolorer: '&9收藏数:&7 %FAVOR%'
+  bindbilibili: '&9绑定B站账号, 输入 %KEYWORD% 关键词取消绑定'
+  flarumsite: '&bFlarum 论坛数据'
+  flarumsitelore: '&9上次活跃时间:&7 %TIME%'
+  bindflarum: '&9绑定Flarum账号, 输入 %KEYWORD% 关键词取消绑定'
+  rewardcommands: '&b奖励命令'
 
 #帮助
 help:

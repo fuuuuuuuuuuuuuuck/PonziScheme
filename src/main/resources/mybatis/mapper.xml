@@ -9,8 +9,10 @@
         `uuid` char(36) NOT NULL,
         `flarumid` int(0),
         `flarumname` varchar(255),
+        `flarumbinddate` bigint(0) NOT NULL,
         `bilibiliid` int(0),
         `bilibiliname` varchar(255),
+        `bilibilibinddate` bigint(0) NOT NULL,
         PRIMARY KEY (`uuid`))
         CHARACTER SET utf8 COLLATE utf8_unicode_ci;
     </update>
@@ -21,8 +23,10 @@
         `uuid` char(36) NOT NULL,
         `flarumid` int(0),
         `flarumname` varchar(255) COLLATE NOCASE,
+        `flarumbinddate` bigint(0) NOT NULL,
         `bilibiliid` int(0),
         `bilibiliname` varchar(255),
+        `bilibilibinddate` bigint(0) NOT NULL,
         PRIMARY KEY (`uuid`));
     </update>
 
@@ -31,11 +35,15 @@
         `id` int(0) NOT NULL AUTO_INCREMENT,
         `uuid` char(36) NOT NULL,
         `tasktype` varchar(255) NOT NULL,
+        `taskid` varchar(255) NOT NULL,
         `taskname` varchar(255) NOT NULL,
         `taskstatus` varchar(255) NOT NULL,
-        `taskstarttime` varchar(16) NOT NULL,
-        `taskendtime` varchar(16),
+        `taskstarttime` bigint(0) NOT NULL,
+        `taskendtime` bigint(0),
         `bvid` varchar(255),
+        `like` int(0),
+        `coin` int(0),
+        `favor` int(0),
         PRIMARY KEY (`id`))
         CHARACTER SET utf8 COLLATE utf8_unicode_ci;
     </update>
@@ -45,11 +53,15 @@
         `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         `uuid` char(36) NOT NULL,
         `tasktype` varchar(255) NOT NULL,
+        `taskid` varchar(255) NOT NULL,
         `taskname` varchar(255) NOT NULL,
         `taskstatus` varchar(255) NOT NULL,
-        `taskstarttime` varchar(16) NOT NULL,
-        `taskendtime` varchar(16),
-        `bvid` varchar(255));
+        `taskstarttime` bigint(0) NOT NULL,
+        `taskendtime` bigint(0),
+        `bvid` varchar(255)),
+        `like` int(0),
+        `coin` int(0),
+        `favor` int(0);
     </update>
 
     <update id="createFlarumPostActivateTaskTableMysql" parameterType="java.lang.String">
@@ -57,23 +69,26 @@
         `id` int(0) NOT NULL AUTO_INCREMENT,
         `uuid` char(36) NOT NULL,
         `tasktype` varchar(255) NOT NULL,
+        `taskid` varchar(255) NOT NULL,
         `taskname` varchar(255) NOT NULL,
         `taskstatus` varchar(255) NOT NULL,
-        `taskstarttime` varchar(16) NOT NULL,
-        `taskendtime` varchar(16),
+        `taskstarttime` bigint(0) NOT NULL,
+        `taskendtime` bigint(0),
         PRIMARY KEY (`id`))
         CHARACTER SET utf8 COLLATE utf8_unicode_ci;
     </update>
 
-    <update id="createFlarumPostActivateTaskTableMysql" parameterType="java.lang.String">
+    <update id="createFlarumPostActivateTaskTableSqlitestop
+" parameterType="java.lang.String">
         CREATE TABLE IF NOT EXISTS ${tablePrefix}bilibilisanlianrecord (
         `id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         `uuid` char(36) NOT NULL,
         `tasktype` varchar(255) NOT NULL,
+        `taskid` varchar(255) NOT NULL,
         `taskname` varchar(255) NOT NULL,
         `taskstatus` varchar(255) NOT NULL,
-        `taskstarttime` varchar(16) NOT NULL,
-        `taskendtime` varchar(16));
+        `taskstarttime` bigint(0) NOT NULL,
+        `taskendtime` bigint(0));
     </update>
 
     <select id="getPlayerProfile" resultType="moe.feo.ponzischeme.player.PlayerProfile">
@@ -97,4 +112,75 @@
         DELETE FROM ${tablePrefix}playerprofile
         WHERE uuid = #{uuid}
     </delete>
+
+    <select id="checkPlayerProfile" resultType="moe.feo.ponzischeme.player.PlayerProfile" parameterType="moe.feo.ponzischeme.player.PlayerProfile">
+            SELECT *
+            FROM ${tablePrefix}playerprofile
+            <where>
+                <if test="flarumid != null">
+                    flarumid = #{flarumid}
+                </if>
+                <if test="bilibiliid != null">
+                    bilibiliid = #{bilibiliid}
+                </if>
+            </where>
+    </select>
+
+    <select id="getFlarumPostActivateTask" resultType="moe.feo.ponzischeme.task.taskentity.FlarumPostActivatePlayerTask" parameterType="moe.feo.ponzischeme.task.taskentity.FlarumPostActivatePlayerTask">
+        SELECT *
+        FROM ${tablePrefix}flarumpostactivaterecord
+        <where>
+            <if test="uuid != null">
+                uuid = #{uuid}
+            </if>
+            <if test="taskid != null">
+                taskid = #{taskid}
+            </if>
+            <if test="taskstarttime != 0">
+                taskstarttime <![CDATA[ >= ]]> #{taskstarttime}
+            </if>
+            <if test="taskendtime != 0">
+                taskendtime <![CDATA[ >= ]]> #{taskendtime}
+            </if>
+            <if test="taskstatus != null">
+                taskstatus = #{taskstatus}
+            </if>
+        </where>
+        ORDER BY id DESC
+    </select>
+
+    <insert id="addFlarumPostActivateTask" parameterType="moe.feo.ponzischeme.task.taskentity.FlarumPostActivatePlayerTask" useGeneratedKeys="true">
+        INSERT INTO ${tablePrefix}flarumpostactivaterecord (uuid, tasktype, taskid, taskname, taskstatus, taskstarttime, taskendtime)
+        VALUES (#{uuid}, #{tasktype}, #{taskid}, #{taskname}, #{taskstatus}, #{taskstarttime}, #{taskendtime})
+    </insert>
+
+    <update id="updateFlarumPostActivateTask" parameterType="moe.feo.ponzischeme.task.taskentity.FlarumPostActivatePlayerTask">
+        UPDATE ${tablePrefix}flarumpostactivaterecord
+        SET taskstatus = #{taskstatus}, taskendtime = #{taskendtime}
+        WHERE uuid = #{uuid} AND taskid = #{taskid}
+    </update>
+
+    <select id="getBilibiliVideoSanlianTask" resultType="moe.feo.ponzischeme.task.taskentity.BilibiliVideoSanlianPlayerTask" parameterType="moe.feo.ponzischeme.task.taskentity.BilibiliVideoSanlianPlayerTask">
+            SELECT *
+            FROM ${tablePrefix}bilibilisanlianrecord
+            <where>
+                <if test="uuid != null">
+                    uuid = #{uuid}
+                </if>
+                <if test="taskid != null">
+                    taskid = #{taskid}
+                </if>
+            </where>
+    </select>
+
+    <insert id="addBilibiliVideoSanlianTask" parameterType="moe.feo.ponzischeme.task.taskentity.BilibiliVideoSanlianPlayerTask" useGeneratedKeys="true">
+        INSERT INTO ${tablePrefix}bilibilisanlianrecord (uuid, tasktype, taskid, taskname, taskstatus, taskstarttime, taskendtime, bvid, like, coin, favor)
+        VALUES (#{uuid}, #{tasktype}, #{taskid}, #{taskname}, #{taskstatus}, #{taskstarttime}, #{taskendtime}, #{bvid}, #{like}, #{coin}, #{favor})
+   </insert>
+
+    <update id="updateBilibiliVideoSanlianTask" parameterType="moe.feo.ponzischeme.task.taskentity.BilibiliVideoSanlianPlayerTask">
+        UPDATE ${tablePrefix}bilibilisanlianrecord
+        SET taskstatus = #{taskstatus}, taskendtime = #{taskendtime}
+        WHERE uuid = #{uuid} AND taskid = #{taskid}
+    </update>
 </mapper>
