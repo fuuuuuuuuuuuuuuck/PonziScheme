@@ -9,8 +9,8 @@ public class BasePlayerTask extends PrefixedTable implements PlayerTaskImpl{
     private String taskId;
     private String taskName;
     private String taskStatus;
-    private long taskStartTime;
-    private long taskEndTime;
+    private Long taskStartTime;
+    private Long taskEndTime;
 
     @Override
     public String getUuid() {
@@ -63,22 +63,22 @@ public class BasePlayerTask extends PrefixedTable implements PlayerTaskImpl{
     }
 
     @Override
-    public long getTaskStartTime() {
+    public Long getTaskStartTime() {
         return taskStartTime;
     }
 
     @Override
-    public void setTaskStartTime(long taskStartTime) {
+    public void setTaskStartTime(Long taskStartTime) {
         this.taskStartTime = taskStartTime;
     }
 
     @Override
-    public long getTaskEndTime() {
+    public Long getTaskEndTime() {
         return taskEndTime;
     }
 
     @Override
-    public void setTaskEndTime(long taskEndTime) {
+    public void setTaskEndTime(Long taskEndTime) {
         this.taskEndTime = taskEndTime;
     }
 }

@@ -11,5 +11,7 @@ commands:
     aliases: [ps]
     usage: |
       /ponzischeme - 打开GUI菜单
-      /ponzischeme read - 读取手中物品
       /ponzischeme help - 显示帮助页面s
+      /ponzischeme reader - 读取手中物品
+      /ponzischeme binding <flarum | bilibili> <用户名 | ID> - 绑定Flarum/B站账号
+      /ponzischeme reload - 重载配置

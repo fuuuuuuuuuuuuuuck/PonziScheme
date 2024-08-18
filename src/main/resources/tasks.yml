@@ -1,5 +1,5 @@
 example-flarum:
-  name: '示例论坛每日活跃任务'
+  name: '§r§f示例论坛每日活跃任务'
   type: 'flarum_post_activate'
   icon:
     ==: org.bukkit.inventory.ItemStack
@@ -10,7 +10,7 @@ example-flarum:
     count: '1'
   reward:
     commands:
-      - 'exp give %player% 1000'
+      - 'experience add %PLAYER% 1000'
     items:
       '1':
         ==: org.bukkit.inventory.ItemStack
@@ -18,7 +18,7 @@ example-flarum:
         type: ENCHANTED_GOLDEN_APPLE
 
 example-bilibili:
-  name: '示例B站三连任务'
+  name: '§r§f示例B站三连任务'
   type: 'bilibili_video_sanlian'
   icon:
     ==: org.bukkit.inventory.ItemStack
@@ -26,9 +26,13 @@ example-bilibili:
     type: WRITABLE_BOOK
   bvid: 'BV1puvUeREap'
   timeLimit: '5m'
+  condition:
+    - 'like'
+    - 'coin'
+    - 'favor'
   reward:
     commands:
-      - 'give %player% diamond 1'
+      - 'give %PLAYER% diamond 1'
     items:
       '1':
         ==: org.bukkit.inventory.ItemStack

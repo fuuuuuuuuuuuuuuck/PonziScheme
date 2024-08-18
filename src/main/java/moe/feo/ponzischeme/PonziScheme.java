@@ -1,7 +1,6 @@
 package moe.feo.ponzischeme;
 
 import moe.feo.ponzischeme.config.Config;
-import moe.feo.ponzischeme.config.ConfigUtil;
 import moe.feo.ponzischeme.config.Language;
 import moe.feo.ponzischeme.gui.GUIListener;
 import moe.feo.ponzischeme.gui.Reader;
@@ -28,16 +27,18 @@ public class PonziScheme extends JavaPlugin {
         Language.load();
         TaskManager.getInstance().saveDefault();
         TaskManager.getInstance().load();
+        Reader.getInstance().saveDefault();
         BilibiliSanlianTimer.load();
         getServer().getPluginManager().registerEvents(Reader.getInstance(), this);
         getServer().getPluginManager().registerEvents(GUIListener.getInstance(), this);
         this.getCommand("ponzischeme").setExecutor(Commands.getInstance());
         this.getCommand("ponzischeme").setTabCompleter(Commands.getInstance());
+        this.getLogger().info(Language.ENABLE.getString());
     }
 
     @Override
     public void onDisable() {
-
+        DatabaseManager.closeDatabase();
     }
 
     public static PonziScheme getInstance() {

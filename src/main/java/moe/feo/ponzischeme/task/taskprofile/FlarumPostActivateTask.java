@@ -5,13 +5,13 @@ import org.bukkit.inventory.ItemStack;
 
 public class FlarumPostActivateTask extends BaseTask{
 
-    private Condition condition;
+    private FlarumCondition condition;
 
-    public Condition getCondition() {
+    public FlarumCondition getCondition() {
         return condition;
     }
 
-    public void setCondition(Condition condition) {
+    public void setCondition(FlarumCondition condition) {
         this.condition = condition;
     }
 

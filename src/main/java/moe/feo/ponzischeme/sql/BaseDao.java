@@ -2,6 +2,7 @@ package moe.feo.ponzischeme.sql;
 
 import moe.feo.ponzischeme.PonziScheme;
 import moe.feo.ponzischeme.config.Config;
+import moe.feo.ponzischeme.config.Language;
 import moe.feo.ponzischeme.player.PlayerProfile;
 import moe.feo.ponzischeme.task.taskentity.BilibiliVideoSanlianPlayerTask;
 import moe.feo.ponzischeme.task.taskentity.FlarumPostActivatePlayerTask;
@@ -17,11 +18,13 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.logging.Level;
 
 public abstract class BaseDao {
 
@@ -45,14 +48,13 @@ public abstract class BaseDao {
 
     public void createSessionFactory() {
         Path path = null;
+        String driver = "";
         if (Config.DATABASE_URL.getString().toLowerCase().contains("jdbc:mysql:")) {
             path = Paths.get(PonziScheme.getInstance().getDataFolder().getAbsolutePath(), "mybatis", "config.mysql.xml");
         } else if (Config.DATABASE_URL.getString().toLowerCase().contains("jdbc:sqlite:")) {
             path = Paths.get(PonziScheme.getInstance().getDataFolder().getAbsolutePath(), "mybatis", "config.sqlite.xml");
-        } else {
-            //TODO 禁用插件
         }
-        SqlSessionFactory sqlSessionFactory = null;
+        SqlSessionFactory sqlSessionFactory;
         try {
             String config = Files.readString(path);
             config = config.replace("${url}", Config.DATABASE_URL.getString().replace("&", "&amp;"))
@@ -84,19 +86,15 @@ public abstract class BaseDao {
         param.setTablePrefix(Config.DATABASE_PREFIX.getString());
         param.setUuid(uuid);
         readlock.lock();
+        PlayerProfile profile;
         try {
-            PlayerProfile profile = session.selectOne("moe.feo.ponzischeme.Mapper.getPlayerProfile", param);
-            if (profile == null) {
-                profile = new PlayerProfile();
-                profile.setUuid(uuid);
-                profile.setName(Bukkit.getPlayer(UUID.fromString(uuid)).getName());
-            }
-            return profile;
+            profile = session.selectOne("moe.feo.ponzischeme.Mapper.getPlayerProfile", param);
         } finally {
             session.commit();
             readlock.unlock();
             session.close();
         }
+        return profile;
     }
 
     public void addPlayerProfile(PlayerProfile profile) {
@@ -158,9 +156,12 @@ public abstract class BaseDao {
                 return null;
         }
         readlock.lock();
-        PlayerProfile profile;
+        PlayerProfile profile = null;
         try {
-            profile = session.selectOne("moe.feo.ponzischeme.Mapper.checkPlayerProfile", param);
+            List<PlayerProfile> profiles = session.selectList("moe.feo.ponzischeme.Mapper.checkPlayerProfile", param);
+            if (profiles != null && !profiles.isEmpty()) {
+                profile = profiles.get(0);
+            }
         } finally {
             session.commit();
             readlock.unlock();
@@ -173,9 +174,12 @@ public abstract class BaseDao {
         SqlSession session = this.getSessionFactory().openSession();
         param.setTablePrefix(Config.DATABASE_PREFIX.getString());
         readlock.lock();
-        FlarumPostActivatePlayerTask task;
+        FlarumPostActivatePlayerTask task = null;
         try {
-            task = session.selectOne("moe.feo.ponzischeme.Mapper.getFlarumPostActivateTask", param);
+            List<FlarumPostActivatePlayerTask> tasks = session.selectList("moe.feo.ponzischeme.Mapper.getFlarumPostActivateTask", param);
+            if (tasks != null && !tasks.isEmpty()) {
+                task = tasks.get(0);
+            }
         } finally {
             session.commit();
             readlock.unlock();
@@ -214,6 +218,7 @@ public abstract class BaseDao {
         SqlSession session = this.getSessionFactory().openSession();
         BilibiliVideoSanlianPlayerTask param = new BilibiliVideoSanlianPlayerTask();
         param.setTablePrefix(Config.DATABASE_PREFIX.getString());
+        param.getTaskId();
         readlock.lock();
         List<BilibiliVideoSanlianPlayerTask> tasks;
         try {
@@ -230,9 +235,12 @@ public abstract class BaseDao {
         SqlSession session = this.getSessionFactory().openSession();
         param.setTablePrefix(Config.DATABASE_PREFIX.getString());
         readlock.lock();
-        BilibiliVideoSanlianPlayerTask task;
+        BilibiliVideoSanlianPlayerTask task = null;
         try {
-            task = session.selectOne("moe.feo.ponzischeme.Mapper.getBilibiliVideoSanlianTask", param);
+            List<BilibiliVideoSanlianPlayerTask> tasks = session.selectList("moe.feo.ponzischeme.Mapper.getBilibiliVideoSanlianTask", param);
+            if (tasks != null && !tasks.isEmpty()) {
+                task = tasks.get(0);
+            }
         } finally {
             session.commit();
             readlock.unlock();

@@ -1,6 +1,6 @@
 package moe.feo.ponzischeme.task.taskprofile;
 
-public class Condition {
+public class FlarumCondition {
 
     public static final String REPEAT_DAYS = "days";
     public static final String REPEAT_WEEKS = "weeks";

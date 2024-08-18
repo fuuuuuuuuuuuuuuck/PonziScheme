@@ -6,12 +6,12 @@ public class PlayerProfile extends PrefixedTable {
 
     private String uuid;
     private String name;
-    private int flarumId;
+    private Integer flarumId;
     private String flarumName;
-    private long flarumBinddate;
-    private int bilibiliId;
-    private String blibiliName;
-    private long bilibiliBinddate;
+    private Long flarumBinddate;
+    private Integer bilibiliId;
+    private String bilibiliName;
+    private Long bilibiliBinddate;
 
     public String getName() {
         return name;
@@ -29,11 +29,11 @@ public class PlayerProfile extends PrefixedTable {
         this.uuid = uuid;
     }
 
-    public int getFlarumId() {
+    public Integer getFlarumId() {
         return flarumId;
     }
 
-    public void setFlarumId(int flarumId) {
+    public void setFlarumId(Integer flarumId) {
         this.flarumId = flarumId;
     }
 
@@ -45,35 +45,35 @@ public class PlayerProfile extends PrefixedTable {
         this.flarumName = flarumName;
     }
 
-    public long getFlarumBinddate() {
+    public Long getFlarumBinddate() {
         return flarumBinddate;
     }
 
-    public void setFlarumBinddate(long flarumBinddate) {
+    public void setFlarumBinddate(Long flarumBinddate) {
         this.flarumBinddate = flarumBinddate;
     }
 
-    public int getBilibiliId() {
+    public Integer getBilibiliId() {
         return bilibiliId;
     }
 
-    public void setBilibiliId(int bilibiliId) {
+    public void setBilibiliId(Integer bilibiliId) {
         this.bilibiliId = bilibiliId;
     }
 
-    public String getBlibiliName() {
-        return blibiliName;
+    public String getBilibiliName() {
+        return bilibiliName;
     }
 
-    public void setBlibiliName(String blibiliName) {
-        this.blibiliName = blibiliName;
+    public void setBilibiliName(String bilibiliName) {
+        this.bilibiliName = bilibiliName;
     }
 
-    public long getBilibiliBinddate() {
+    public Long getBilibiliBinddate() {
         return bilibiliBinddate;
     }
 
-    public void setBilibiliBinddate(long bilibiliBinddate) {
+    public void setBilibiliBinddate(Long bilibiliBinddate) {
         this.bilibiliBinddate = bilibiliBinddate;
     }
 }

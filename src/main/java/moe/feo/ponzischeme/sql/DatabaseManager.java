@@ -1,31 +1,39 @@
 package moe.feo.ponzischeme.sql;
 
-import moe.feo.ponzischeme.Commands;
+import moe.feo.ponzischeme.PonziScheme;
 import moe.feo.ponzischeme.config.Config;
 import moe.feo.ponzischeme.config.ConfigUtil;
+import moe.feo.ponzischeme.config.Language;
 
 
 public class DatabaseManager {
-    public static BaseDao dao;
+    private static BaseDao dao;
 
     public static void initialize() {// 初始化或重载数据库
         BaseDao.writelock.lock();
         try {
-            if (dao != null) {
-                dao.closeSessionFactory();// 此方法会在已经建立过连接的情况下关闭连接
+            if (getDao() != null) {
+                getDao().closeSessionFactory();// 此方法会在已经建立过连接的情况下关闭连接
             }
             if (Config.DATABASE_URL.getString().toLowerCase().contains("jdbc:mysql:")) {
-                dao = MysqlDao.getInstance();
+                setDao(MysqlDao.getInstance());
             } else if (Config.DATABASE_URL.getString().toLowerCase().contains("jdbc:sqlite:")) {
-                dao = SqliteDao.getInstance();
+                setDao(SqliteDao.getInstance());
             }
-            dao.load();
-            //Crawler.setSQLer(dao);
-            //Poster.setSQLer(dao);
-            //Reminder.setSQLer(dao);
-            //if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            //    PAPIExpansion.setSQLer(dao);
-            //}
+            getDao().load();
+        } catch (Exception e) {
+            e.printStackTrace();
+            PonziScheme.getInstance().getLogger().severe(Language.FAILEDCONNECTSQL.getString());
+        } finally {
+            BaseDao.writelock.unlock();
+        }
+    }
+
+    public static void closeDatabase() {// 关闭数据库
+        BaseDao.writelock.lock();
+        try {
+            getDao().closeSessionFactory();
+            setDao(null);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -33,9 +41,8 @@ public class DatabaseManager {
         }
     }
 
-    public static void closeDatabase() {// 关闭数据库
-        dao.closeSessionFactory();
-        dao = null;
+    public static BaseDao getDao() {
+        return dao;
     }
 
     public static void saveDefaultFile() {
@@ -45,5 +52,9 @@ public class DatabaseManager {
         ConfigUtil.saveDefault(mysqlConfig);
         ConfigUtil.saveDefault(sqliteConfig);
         ConfigUtil.saveDefault(mapperPath);
+    }
+
+    public static void setDao(BaseDao dao) {
+        DatabaseManager.dao = dao;
     }
 }

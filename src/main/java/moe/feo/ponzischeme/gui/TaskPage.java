@@ -5,11 +5,10 @@ import moe.feo.ponzischeme.Util;
 import moe.feo.ponzischeme.bilibili.BilibiliVideoStatus;
 import moe.feo.ponzischeme.config.Config;
 import moe.feo.ponzischeme.config.Language;
-import moe.feo.ponzischeme.flarum.FlarumPost;
+import moe.feo.ponzischeme.player.PlayerProfile;
 import moe.feo.ponzischeme.sql.DatabaseManager;
 import moe.feo.ponzischeme.task.TaskType;
 import moe.feo.ponzischeme.task.taskprofile.BilibiliVideoSanlianTask;
-import moe.feo.ponzischeme.task.taskprofile.FlarumPostActivateTask;
 import moe.feo.ponzischeme.task.taskprofile.TaskImpl;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -20,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -93,23 +91,23 @@ public class TaskPage {
                 // BiliBili 视频详情
                 ItemStack video = new ItemStack(Material.TARGET, 1);
                 ItemMeta videoMeta = video.getItemMeta();
-                videoMeta.setDisplayName(Language.GUI_BILIBILI_VIDEO.getString());
+                videoMeta.setDisplayName(Language.GUI_BILIBILIVIDEO.getString());
                 ArrayList<String> videoLore = new ArrayList<>();
-                videoLore.add(Language.GUI_BILIBILI_VIDEO_LORE.getString().replaceAll("%BVID%", bvid));
-                videoLore.add(Language.GUI_CLAIMREWARD.getString());
+                videoLore.add(Language.GUI_BILIBILIVIDEOLORE.getString().replaceAll("%BVID%", bvid));
+                videoLore.add(Language.GUI_LEFTCLICK.getString());
+                videoLore.add(Language.GUI_RIGHTCLICKURL.getString());
                 // TODO 判断玩家是否领取该任务和任务状态
-                videoMeta.setLore(Arrays.asList(Language.GUI_BILIBILI_VIDEO_LORE.getString()
-                        .replaceAll("%BVID%", bvid)));
+                videoMeta.setLore(videoLore);
                 video.setItemMeta(videoMeta);
                 inv.setItem(16, video);
 
                 // BiliBili 点赞
-                ItemStack like = new ItemStack(Material.NETHERITE_UPGRADE_SMITHING_TEMPLATE, 1);
+                ItemStack like = new ItemStack(Material.CAMPFIRE, 1);
                 ItemMeta likeMeta = like.getItemMeta();
-                likeMeta.setDisplayName(Language.GUI_BILIBILI_LIKE.getString());
+                likeMeta.setDisplayName(Language.GUI_BILIBILILIKE.getString());
                 String likeString;
                 if (status != null) {
-                    likeString = Language.GUI_BILIBILI_LIKE_LORE.getString().replaceAll("%LIKE%", String.valueOf(status.getLike()));
+                    likeString = Language.GUI_BILIBILILIKELORE.getString().replaceAll("%LIKE%", String.valueOf(status.getLike()));
                 } else {
                     likeString = Language.GUI_BILIBILIERROR.getString();
                 }
@@ -122,14 +120,15 @@ public class TaskPage {
                 // BiliBili 投币
                 ItemStack coin = new ItemStack(Material.SUNFLOWER, 1);
                 ItemMeta coinMeta = coin.getItemMeta();
-                coinMeta.setDisplayName(Language.GUI_BILIBILI_COIN.getString());
+                coinMeta.setDisplayName(Language.GUI_BILIBILICOIN.getString());
                 String coinString;
                 if (status != null) {
-                    coinString = Language.GUI_BILIBILI_LIKE_LORE.getString().replaceAll("%LIKE%", String.valueOf(status.getLike()));
+                    coinString = Language.GUI_BILIBILICOINLORE.getString().replaceAll("%COIN%", String.valueOf(status.getCoin()));
                 } else {
                     coinString = Language.GUI_BILIBILIERROR.getString();
                 }
                 ArrayList<String> coinLore = new ArrayList<>();
+                coinLore.add(coinString);
                 coinMeta.setLore(coinLore);
                 coin.setItemMeta(coinMeta);
                 inv.setItem(34, coin);
@@ -137,14 +136,15 @@ public class TaskPage {
                 // BiliBili 收藏
                 ItemStack chest = new ItemStack(Material.CHEST_MINECART, 1);
                 ItemMeta chestMeta = chest.getItemMeta();
-                chestMeta.setDisplayName(Language.GUI_BILIBILI_LIKE.getString());
+                chestMeta.setDisplayName(Language.GUI_BILIBILIFAVOR.getString());
                 String favorString;
                 if (status != null) {
-                    favorString = Language.GUI_BILIBILI_LIKE_LORE.getString().replaceAll("%LIKE%", String.valueOf(status.getLike()));
+                    favorString = Language.GUI_BILIBILIFAVORLORE.getString().replaceAll("%FAVOR%", String.valueOf(status.getFavorite()));
                 } else {
                     favorString = Language.GUI_BILIBILIERROR.getString();
                 }
                 ArrayList<String> favorLore = new ArrayList<>();
+                favorLore.add(favorString);
                 chestMeta.setLore(favorLore);
                 chest.setItemMeta(chestMeta);
                 inv.setItem(43, chest);
@@ -154,23 +154,19 @@ public class TaskPage {
             // Flarum论坛活跃
             else if (task.getTaskType().equals(TaskType.FLARUM_POST_ACTIVATE)) {
                 // 论坛数据
-                FlarumPostActivateTask flarumPostActivateTask = (FlarumPostActivateTask) task;
-                int flarumUserId = DatabaseManager.dao.getPlayerProfile(player.getUniqueId().toString()).getFlarumId();
-                ArrayList<FlarumPost> flarumPosts = null;
-                if (flarumUserId != 0) {
-                    String flarumUserName = Crawler.getFlarumUserByUserId(Config.FLARUMURL.getString(), flarumUserId).getAttributes().getSlug();
-                    flarumPosts = Crawler.getFlarumActivateByUsername(Config.FLARUMURL.getString(), flarumUserName);
+                PlayerProfile profile = DatabaseManager.getDao().getPlayerProfile(player.getUniqueId().toString());
+                int flarumUserId = 0;
+                if (profile != null) {
+                    flarumUserId = profile.getFlarumId();
                 }
-                String lastPostTime = "-";
-                if (flarumPosts != null && (flarumPosts.size() != 0)) {
-                    lastPostTime = flarumPosts.get(0).getAttributes().getCreatedAt();
-                }
+                String url = Config.FLARUMURL.getString();
                 ItemStack flarum = new ItemStack(Material.TARGET, 1);
                 ItemMeta flarumMeta = flarum.getItemMeta();
                 flarumMeta.setDisplayName(Language.GUI_FLARUMSITE.getString());
                 ArrayList<String> siteLore = new ArrayList<>();
-                siteLore.add(Language.GUI_FLARUMSITE_LORE.getString().replaceAll("%TIME%", lastPostTime));
-                siteLore.add(Language.GUI_CLAIMREWARD.getString());
+                siteLore.add(Language.GUI_FLARUMSITE_LORE.getString().replaceAll("%URL%", url));
+                siteLore.add(Language.GUI_LEFTCLICK.getString());
+                siteLore.add(Language.GUI_RIGHTCLICKURL.getString());
                 // TODO 判断玩家是否领取该任务和任务状态
                 flarumMeta.setLore(siteLore);
                 flarum.setItemMeta(flarumMeta);
@@ -203,14 +199,14 @@ public class TaskPage {
     }
 
     public void prev() {
-        if (currentPage > 1) {
+        if (currentPage > 0) {
             currentPage--;
             updateGui();
         }
     }
 
     public void next() {
-        int max = (int) Math.ceil(task.getRewards().getItems().size() / 20.0);
+        int max = (int) Math.floor(task.getRewards().getItems().size() / 20.0);
         if (currentPage < max) {
             currentPage++;
             updateGui();

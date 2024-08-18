@@ -12,8 +12,8 @@ public interface PlayerTaskImpl {
     void setTaskName(String taskName);
     String getTaskStatus();
     void setTaskStatus(String taskStatus);
-    long getTaskStartTime();
-    void setTaskStartTime(long taskStartTime);
-    long getTaskEndTime();
-    void setTaskEndTime(long taskEndTime);
+    Long getTaskStartTime();
+    void setTaskStartTime(Long taskStartTime);
+    Long getTaskEndTime();
+    void setTaskEndTime(Long taskEndTime);
 }

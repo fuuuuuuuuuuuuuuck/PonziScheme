@@ -7,12 +7,15 @@ import moe.feo.ponzischeme.bilibili.BilibiliVideoStatus;
 import moe.feo.ponzischeme.config.Language;
 import moe.feo.ponzischeme.sql.DatabaseManager;
 import moe.feo.ponzischeme.task.TaskManager;
+import moe.feo.ponzischeme.task.taskprofile.BaseTask;
+import moe.feo.ponzischeme.task.taskprofile.BiliBiliCondition;
 import moe.feo.ponzischeme.task.taskprofile.BilibiliVideoSanlianTask;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BilibiliSanlianTimer {
 
@@ -33,7 +36,7 @@ public class BilibiliSanlianTimer {
     }
 
     public static void load() {
-        List<BilibiliVideoSanlianPlayerTask> tasks = DatabaseManager.dao.loadBilibiliVideoSanlianTasks();
+        List<BilibiliVideoSanlianPlayerTask> tasks = DatabaseManager.getDao().loadBilibiliVideoSanlianTasks();
         if (tasks == null) {
             for (BilibiliVideoSanlianPlayerTask task : tasks) {
                 if (!task.getTaskStatus().equals(PlayerTaskStatus.RUNNING)) { // 跳过已经结束的任务
@@ -46,7 +49,11 @@ public class BilibiliSanlianTimer {
                     if (System.currentTimeMillis() > startTime + timeLimit) { // 任务已过期
                         task.setTaskStatus(PlayerTaskStatus.CANCELED);
                         task.setTaskEndTime(startTime + timeLimit);
-                        DatabaseManager.dao.updateBilibiliVideoSanlianTask(task);
+                        DatabaseManager.getDao().updateBilibiliVideoSanlianTask(task);
+                        Player player = PonziScheme.getInstance().getServer().getPlayer(UUID.fromString(task.getUuid()));
+                        if (player != null && player.isOnline()) {
+                            player.sendMessage(Language.PREFIX.getString() + Language.TASKCANCELED.getString());
+                        }
                     } else { // 未过期, 恢复任务, 并检测领取奖励条件
                         long newTimeLimit = (startTime + timeLimit) - System.currentTimeMillis();
                         BilibiliSanlianTimer timer = newTimer(task, task.getTaskEndTime() - System.currentTimeMillis());
@@ -85,8 +92,8 @@ public class BilibiliSanlianTimer {
                 if (task.getTaskStatus().equals(PlayerTaskStatus.RUNNING)) {
                     task.setTaskStatus(PlayerTaskStatus.CANCELED);
                     task.setTaskEndTime(System.currentTimeMillis());
-                    DatabaseManager.dao.updateBilibiliVideoSanlianTask(task);
-                    Player player = PonziScheme.getInstance().getServer().getPlayer(task.getUuid());
+                    DatabaseManager.getDao().updateBilibiliVideoSanlianTask(task);
+                    Player player = PonziScheme.getInstance().getServer().getPlayer(UUID.fromString(task.getUuid()));
                     if (player != null && player.isOnline()) {
                         player.sendMessage(Language.PREFIX.getString() + Language.TASKCANCELED.getString());
                     }
@@ -100,7 +107,7 @@ public class BilibiliSanlianTimer {
     }
 
     public void check() {
-        Player player = PonziScheme.getInstance().getServer().getPlayer(task.getUuid());
+        Player player = PonziScheme.getInstance().getServer().getPlayer(UUID.fromString(task.getUuid()));
         // 玩家不在线时跳过检查
         if (player == null || !player.isOnline()) {
             return;
@@ -110,25 +117,41 @@ public class BilibiliSanlianTimer {
             int likeNow = status.getLike();
             int coinNow = status.getCoin();
             int favorNow = status.getFavorite();
-            if (likeNow > task.getLike() || coinNow > task.getCoin() || favorNow > task.getFavor()) {
+            int likeBefore = -1;
+            int coinBefore = -1;
+            int favorBefore = -1;
+            BaseTask baseTask = TaskManager.getInstance().getTasks().get(task.getTaskId());
+            BilibiliVideoSanlianTask sanlianTask = (BilibiliVideoSanlianTask) baseTask;
+            // 需要的条件
+            if (sanlianTask.getCondition().contains(BiliBiliCondition.LIKE)) {
+                likeBefore = task.getLike();
+            }
+            if (sanlianTask.getCondition().contains(BiliBiliCondition.COIN)) {
+                coinBefore = task.getCoin();
+            }
+            if (sanlianTask.getCondition().contains(BiliBiliCondition.FAVOR)) {
+                favorBefore = task.getFavor();
+            }
+            if (likeNow > likeBefore && coinNow > coinBefore && favorNow > favorBefore) {
                 Runnable rewardRunnable = new Runnable() {
                     @Override
                     public void run() {
                         TaskManager.getInstance().getTasks().get(task.getTaskId()).giveReward(player);
                     }
                 };
-                Util.runTask(rewardRunnable, player);
+                Util.runTaskGlobally(rewardRunnable);
                 task.setTaskStatus(PlayerTaskStatus.COMPLETED);
                 BilibiliVideoSanlianPlayerTask param = new BilibiliVideoSanlianPlayerTask();
                 param.setUuid(task.getUuid());
                 param.setTaskId(task.getTaskId());
                 param.setTaskStatus(task.getTaskStatus());
-                if (DatabaseManager.dao.getBilibiliVideoSanlianTask(param) != null) {
-                    DatabaseManager.dao.updateBilibiliVideoSanlianTask(task);
+                if (DatabaseManager.getDao().getBilibiliVideoSanlianTask(param) != null) {
+                    DatabaseManager.getDao().updateBilibiliVideoSanlianTask(task);
                 } else {
-                    DatabaseManager.dao.addBilibiliVideoSanlianTask(task);
+                    DatabaseManager.getDao().addBilibiliVideoSanlianTask(task);
                 }
-                player.sendMessage(Language.PREFIX.getString() + Language.REWARDGIVED.getString());
+                player.sendMessage(Language.PREFIX.getString() + Language.REWARDGIVED.getString().replaceAll("%TASK%", task.getTaskName()));
+                cancel = true;
             } else {
                 player.sendMessage(Language.PREFIX.getString() + Language.TASKONGOING.getString());
             }

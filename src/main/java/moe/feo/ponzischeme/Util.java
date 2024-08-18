@@ -6,9 +6,7 @@ import io.papermc.paper.threadedregions.scheduler.GlobalRegionScheduler;
 import io.papermc.paper.threadedregions.scheduler.ScheduledTask;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitScheduler;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -82,6 +80,15 @@ public class Util {
         }
     }
 
+    public static boolean isPaper() {
+        String versionInfo = Bukkit.getVersion();
+        if (versionInfo.contains("Paper")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static void runTaskAsynchronously(Runnable runnable, Player player) {
         Object scheduler;
         if (Util.isFolia()) {
@@ -110,6 +117,26 @@ public class Util {
         }
     }
 
+    public static void runTaskGlobally(Runnable runnable) {
+        Object scheduler;
+        if (Util.isFolia()) {
+            scheduler = PonziScheme.getInstance().getServer().getGlobalRegionScheduler();
+        } else {
+            scheduler = Bukkit.getScheduler();
+        }
+        if (Util.isFolia()) {
+            Consumer<ScheduledTask> consumer = new Consumer<ScheduledTask>() {
+                @Override
+                public void accept(ScheduledTask scheduledTask) {
+                    runnable.run();
+                }
+            };
+            ((GlobalRegionScheduler) scheduler).run(PonziScheme.getInstance(), consumer);
+        } else {
+            ((BukkitScheduler) scheduler).runTask(PonziScheme.getInstance(), runnable);
+        }
+    }
+
     public static void runTaskLaterAsynchronously(Runnable runnable, long delay) {
         Object scheduler;
         if (Util.isFolia()) {
@@ -127,11 +154,11 @@ public class Util {
             };
             ((AsyncScheduler) scheduler).runDelayed(PonziScheme.getInstance(), consumer, delay, TimeUnit.MILLISECONDS);
         } else {
-            ((BukkitScheduler) scheduler).runTaskLaterAsynchronously(PonziScheme.getInstance(), runnable, delay);
+            ((BukkitScheduler) scheduler).runTaskLaterAsynchronously(PonziScheme.getInstance(), runnable, delay / 50);
         }
     }
 
-    public static void runTaskLater(Runnable runnable, Player player, long delay) {
+    public static void runTaskLater(Runnable runnable, long delay) {
         Object scheduler;
         if (Util.isFolia()) {
             scheduler = PonziScheme.getInstance().getServer().getGlobalRegionScheduler();
@@ -145,7 +172,7 @@ public class Util {
                     runnable.run();
                 }
             };
-            ((GlobalRegionScheduler) scheduler).runDelayed(PonziScheme.getInstance(), consumer, (delay / 50));
+            ((GlobalRegionScheduler) scheduler).runDelayed(PonziScheme.getInstance(), consumer, (delay));
         } else {
             ((BukkitScheduler) scheduler).runTaskLater(PonziScheme.getInstance(), runnable, delay);
         }

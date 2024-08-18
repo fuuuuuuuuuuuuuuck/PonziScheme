@@ -1,6 +1,7 @@
 package moe.feo.ponzischeme.sql;
 
 import moe.feo.ponzischeme.config.Config;
+import org.apache.ibatis.session.SqlSession;
 
 public class SqliteDao extends BaseDao{
 
@@ -20,23 +21,38 @@ public class SqliteDao extends BaseDao{
 
     @Override
     protected void createPlayerProfileTable() {
-        super.getSessionFactory().openSession().update(
-                "moe.feo.ponzischeme.Mapper.createPlayerProfileTableSqlite",
-                Config.DATABASE_PREFIX.getString());
+        SqlSession session = super.getSessionFactory().openSession();
+        try {
+            session.update("moe.feo.ponzischeme.Mapper.createPlayerProfileTableSqlite",
+                    Config.DATABASE_PREFIX.getString());
+        } finally {
+            session.commit();
+            session.close();
+        }
     }
 
     @Override
     protected void createBilibiliVideoSanlianTaskDataTable() {
-        super.getSessionFactory().openSession().update(
-                "moe.feo.ponzischeme.Mapper.createBilibiliVideoSanlianTaskTableSqlite",
-                Config.DATABASE_PREFIX.getString());
+        SqlSession session = super.getSessionFactory().openSession();
+        try {
+            session.update("moe.feo.ponzischeme.Mapper.createBilibiliVideoSanlianTaskTableSqlite",
+                    Config.DATABASE_PREFIX.getString());
+        } finally {
+            session.commit();
+            session.close();
+        }
     }
 
     @Override
     protected void createFlarumPostActivateTaskDataTable() {
-        super.getSessionFactory().openSession().update(
-                "moe.feo.ponzischeme.Mapper.createFlarumPostActivateTaskTableSqlite",
-                Config.DATABASE_PREFIX.getString());
+        SqlSession session = super.getSessionFactory().openSession();
+        try {
+            session.update("moe.feo.ponzischeme.Mapper.createFlarumPostActivateTaskTableSqlite",
+                    Config.DATABASE_PREFIX.getString());
+        } finally {
+            session.commit();
+            session.close();
+        }
     }
 
 }

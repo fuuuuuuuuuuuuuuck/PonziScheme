@@ -5,9 +5,9 @@ import moe.feo.ponzischeme.task.TaskType;
 public class BilibiliVideoSanlianPlayerTask extends BasePlayerTask {
 
     private String bvid;
-    private int like;
-    private int coin;
-    private int favor;
+    private Integer like;
+    private Integer coin;
+    private Integer favor;
 
     public BilibiliVideoSanlianPlayerTask() {
         super();
@@ -22,27 +22,27 @@ public class BilibiliVideoSanlianPlayerTask extends BasePlayerTask {
         this.bvid = bvid;
     }
 
-    public int getLike() {
+    public Integer getLike() {
         return like;
     }
 
-    public void setLike(int like) {
+    public void setLike(Integer like) {
         this.like = like;
     }
 
-    public int getCoin() {
+    public Integer getCoin() {
         return coin;
     }
 
-    public void setCoin(int coin) {
+    public void setCoin(Integer coin) {
         this.coin = coin;
     }
 
-    public int getFavor() {
+    public Integer getFavor() {
         return favor;
     }
 
-    public void setFavor(int favor) {
+    public void setFavor(Integer favor) {
         this.favor = favor;
     }
 }

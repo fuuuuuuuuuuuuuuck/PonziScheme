@@ -1,6 +1,7 @@
 database:
   prefix: 'ps_'
-  url: 'jdbc:mysql://127.0.0.1:3306/mc?useSSL=false&serverTimezone=UTC&autoReconnect=true&allowPublicKeyRetrieval=true&characterEncoding=utf8'
+  url: 'jdbc:sqlite:${dir}/ps.db'
+  #url: 'jdbc:mysql://127.0.0.1:3306/mc?useSSL=false&serverTimezone=UTC&autoReconnect=true&allowPublicKeyRetrieval=true&characterEncoding=utf8'
   user: mc
   password: mctest
 lang: zh_cn
