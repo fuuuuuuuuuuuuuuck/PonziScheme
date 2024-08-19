@@ -1,15 +1,24 @@
+# 数据库配置
 database:
+  # 数据库表名前缀
   prefix: 'ps_'
-  url: 'jdbc:sqlite:${dir}/ps.db'
+  # 数据库 JDBC 连接地址, 目前仅支持 MySQL和 SQLite
   #url: 'jdbc:mysql://127.0.0.1:3306/mc?useSSL=false&serverTimezone=UTC&autoReconnect=true&allowPublicKeyRetrieval=true&characterEncoding=utf8'
+  url: 'jdbc:sqlite:${dir}/ps.db'
+  # 数据库用户名, 数据库类型为SQLite时不起作用
   user: mc
+  # 数据库密码, 数据库类型为SQLite时不起作用
   password: mctest
+# 语言文件的文件名
 lang: zh_cn
+# Flarum 论坛地址
 flarumurl: 'https://bbs.yinwurealm.org'
+# 取消绑定操作的关键词
 cancelkeywords:
   - 'cancel'
   - '取消'
   - '取消绑定'
+# 绑定操作冷却时间, 单位为天
 bindcooldown:
   flarum: 30
   bilibili: 30

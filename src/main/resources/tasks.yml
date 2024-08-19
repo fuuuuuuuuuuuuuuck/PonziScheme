@@ -1,39 +1,63 @@
+# Flarum 论坛活跃任务示例
+# 任务id: example-flarum
 example-flarum:
+  # 任务名称
   name: '§r§f示例论坛每日活跃任务'
+  # 任务类型
   type: 'flarum_post_activate'
+  # 任务图标
   icon:
     ==: org.bukkit.inventory.ItemStack
     v: 3839
     type: NETHER_STAR
+  # 任务达成条件
   condition:
+    # 重复接取, days代表每日重复接取, weeks代表每周重复接取
     repeat: 'days'
+    # 需要活跃的次数
     count: '1'
+  # 任务奖励
   reward:
+    # 奖励命令
     commands:
       - 'experience add %PLAYER% 1000'
+    # 奖励物品
     items:
+      # 键'1'不必是数字, 值必须为物品的序列化文本
       '1':
         ==: org.bukkit.inventory.ItemStack
         v: 3839
         type: ENCHANTED_GOLDEN_APPLE
 
+# B站视频三连任务示例
+# 任务id: example-bilibili
 example-bilibili:
+  # 任务名称
   name: '§r§f示例B站三连任务'
+  # 任务类型
   type: 'bilibili_video_sanlian'
+  # 任务图标
   icon:
     ==: org.bukkit.inventory.ItemStack
     v: 3839
     type: WRITABLE_BOOK
+  # B站视频BV号
   bvid: 'BV1puvUeREap'
+  # 任务时限, 可用单位包括 d, h, m, s
   timeLimit: '5m'
+  # 任务达成条件, 可用值包括 like, coin, favor
   condition:
     - 'like'
     - 'coin'
     - 'favor'
+  # 任务奖励
   reward:
+    # 奖励命令
     commands:
       - 'give %PLAYER% diamond 1'
+    # 奖励物品
     items:
+      # 键'1'不必是数字, 值必须为物品的序列化文本
       '1':
         ==: org.bukkit.inventory.ItemStack
         v: 3839
