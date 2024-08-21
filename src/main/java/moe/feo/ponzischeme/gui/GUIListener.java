@@ -48,8 +48,8 @@ public class GUIListener implements Listener {
         InventoryHolder holder = event.getInventory().getHolder();
         //mainpage逻辑
         if (holder instanceof MainPage.MainPageGUIHolder) {
-            MainPage page = ((MainPage.MainPageGUIHolder) holder).getPage();
             event.setCancelled(true);
+            MainPage page = ((MainPage.MainPageGUIHolder) holder).getPage();
             // Flarum论坛账号信息
             if (event.getRawSlot() == 39){
                 player.closeInventory();
@@ -132,7 +132,7 @@ public class GUIListener implements Listener {
             public void run() {
                 PlayerProfile profile = DatabaseManager.getDao().getPlayerProfile(player.getUniqueId().toString());
                 if (task instanceof FlarumPostActivateTask) {
-                    if (profile == null || profile.getFlarumId() == 0) {
+                    if (profile == null || profile.getFlarumId() == null || profile.getFlarumId() == 0) {
                         player.sendMessage(Language.PREFIX.getString() + Language.NOTBOUNDFLARUM.getString());
                         return;
                     }
@@ -230,7 +230,7 @@ public class GUIListener implements Listener {
                         player.sendMessage(Language.PREFIX.getString() + Language.TASKRECIVED.getString());
                     }
                 } else if (task instanceof BilibiliVideoSanlianTask) {
-                    if (profile == null || profile.getBilibiliId() == 0) {
+                    if (profile == null || profile.getBilibiliId() == null || profile.getBilibiliId() == 0) {
                         player.sendMessage(Language.PREFIX.getString() + Language.NOTBOUNDBILIBILI.getString());
                         return;
                     }

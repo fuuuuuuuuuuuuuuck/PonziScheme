@@ -59,7 +59,7 @@ public class BindListener extends RegisteredListener implements Listener, EventE
     }
 
     public BindListener(UUID uuid, String type) {// 在构造函数中初始化RegisteredListener和UUID
-        super(null, null, EventPriority.HIGH, PonziScheme.getInstance(), false);
+        super(null, null, EventPriority.HIGHEST, PonziScheme.getInstance(), false);
         this.uid = uuid;
         this.type = type;
         this.state = false;
@@ -123,9 +123,9 @@ public class BindListener extends RegisteredListener implements Listener, EventE
     public void onPlayerChatNew(AsyncChatEvent event) {
         if (!event.getPlayer().getUniqueId().equals(uid))
             return;
+        event.setCancelled(true);
         Player player = event.getPlayer();
         String msg = LegacyComponentSerializer.legacySection().serialize(event.originalMessage());
-        event.setCancelled(true);
         handle(player, msg);
     }
 

@@ -151,6 +151,8 @@ public class BilibiliSanlianTimer {
                     DatabaseManager.getDao().addBilibiliVideoSanlianTask(task);
                 }
                 player.sendMessage(Language.PREFIX.getString() + Language.REWARDGIVED.getString().replaceAll("%TASK%", task.getTaskName()));
+                PonziScheme.getInstance().getServer().broadcastMessage(Language.REWARDBROADCAST.getString()
+                        .replaceAll("%PLAYER%", player.getName()).replaceAll("%TASK%", task.getTaskName()));
                 cancel = true;
             } else {
                 player.sendMessage(Language.PREFIX.getString() + Language.TASKONGOING.getString());
