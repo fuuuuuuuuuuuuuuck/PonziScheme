@@ -229,7 +229,7 @@ public class MainPage {
                 if (ongoing != null) {// 正在进行的任务
                     loresNew.add(Language.GUI_TASKSTATUS.getString().replaceAll("%STATUS%", Language.GUI_STATUSRUNNING.getString()));
                 } else if (completed != null) {// B站三连任务只能接取一次
-                    loresNew.add(Language.GUI_TASKSTATUS.getString().replaceAll("%STATUS%", Language.GUI_STATUSCOMPLETE.getString()));
+                    loresNew.add(Language.GUI_TASKSTATUS.getString().replaceAll("%STATUS%", Language.GUI_STATUSCOMPLETED.getString()));
                 } else {
                     loresNew.add(Language.GUI_TASKSTATUS.getString().replaceAll("%STATUS%", Language.GUI_STATUSAVAILABLE.getString()));
                 }

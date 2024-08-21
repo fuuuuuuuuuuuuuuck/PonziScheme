@@ -141,10 +141,10 @@ public class BilibiliSanlianTimer {
                 };
                 Util.runTaskGlobally(rewardRunnable);
                 task.setTaskStatus(PlayerTaskStatus.COMPLETED);
+                task.setTaskEndTime(System.currentTimeMillis());
                 BilibiliVideoSanlianPlayerTask param = new BilibiliVideoSanlianPlayerTask();
                 param.setUuid(task.getUuid());
                 param.setTaskId(task.getTaskId());
-                param.setTaskStatus(task.getTaskStatus());
                 if (DatabaseManager.getDao().getBilibiliVideoSanlianTask(param) != null) {
                     DatabaseManager.getDao().updateBilibiliVideoSanlianTask(task);
                 } else {

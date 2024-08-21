@@ -56,7 +56,7 @@ public enum Language {
     GUI_TASKLOREBILIBILI("gui.tasklorebilibili"),
     GUI_TASKSTATUS("gui.taskstatus"),
     GUI_STATUSRUNNING("gui.statusrunning"),
-    GUI_STATUSCOMPLETE("gui.statuscomplete"),
+    GUI_STATUSCOMPLETED("gui.statuscompleted"),
     GUI_STATUSAVAILABLE("gui.statusavailable"),
     GUI_STATUSCOOLDOWN("gui.statuscooldown"),
     GUI_LEFTCLICK("gui.leftclick"),
