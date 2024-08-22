@@ -68,7 +68,14 @@ public class BaseTask implements TaskImpl {
     @Override
     public void giveReward(Player player) {
         List<ItemStack> items = getRewards().getItems();
-        player.getInventory().addItem(items.toArray(new ItemStack[0]));
+        HashMap<Integer,ItemStack> notAdded =player.getInventory().addItem(items.toArray(new ItemStack[0]));
+        if (!notAdded.isEmpty()){
+            for (Integer i:notAdded.keySet()){
+                player.getWorld().dropItem(player.getLocation(),notAdded.get(i));    
+            }
+            
+        }
+        
         List<String> commands = getRewards().getCommands();
         for (String command : commands) {
             Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replaceAll("%PLAYER%", player.getName()));
